@@ -10,7 +10,7 @@ public class DBManager {
         try {
             conn = connect();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("No DB found");
         }
     }
 
