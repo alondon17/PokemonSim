@@ -15,7 +15,7 @@ public class DBManager {
     }
 
     public static void main(String[] args) {
-        getSpecies();
+
 
 
     }
@@ -25,11 +25,11 @@ public class DBManager {
                 "jdbc:postgresql://localhost:5432/postgres", "postgres", "Aa123456");
     }
 
-    public static ArrayList<Species> getSpecies() {
+    public static ArrayList<Species> getSpecies() throws SQLException {
         String SQL = "SELECT * FROM pokemon.species " +
                 "ORDER BY id ASC";
 ArrayList<Species> list=new ArrayList<>();
-        try {
+
 
             PreparedStatement pstmt = conn.prepareStatement(SQL);
 
@@ -47,10 +47,7 @@ ArrayList<Species> list=new ArrayList<>();
                         rs.getInt("type2"),
                         Methoder.toIntArr(rs.getArray("learnset"))));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
 
-        }
         return list;
     }
 }

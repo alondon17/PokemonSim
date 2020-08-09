@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.*;
 
 public class SpeciesList {
@@ -17,7 +18,12 @@ public class SpeciesList {
         list.put(pkmn.id(), pkmn);
         pkmn = new Species(66, "Machop", new BaseStats(70,80,50,35,35,35),61,new int[]{0,1,0,0,0,0}, 2, 0, new Move[]{MoveList.getMove(2), MoveList.getMove(24)});
         list.put(pkmn.id(), pkmn);
-        insertDBSpecies();
+        try {
+            insertDBSpecies();
+        }
+        catch (SQLException e){
+
+        }
     }
 
     public static Species getSpecies(int id) {
@@ -25,7 +31,7 @@ public class SpeciesList {
             return list.get(id);
         return null;
     }
-    private static void insertDBSpecies() {
+    private static void insertDBSpecies() throws SQLException {
         for (Species species:DBManager.getSpecies()) {
             list.put(species.id(),species);
         }
