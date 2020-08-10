@@ -89,4 +89,11 @@ public class Methoder {
     public static int random(int upperLimit){
         return rnd.nextInt(upperLimit);
     }
+    public static String arrToCode(int[] arr){
+        String s= ""+arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            s+=","+arr[i];
+        }
+        return s;
+    }
 }

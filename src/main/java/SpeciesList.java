@@ -10,6 +10,10 @@ public class SpeciesList {
         Species pkmn;
         pkmn = new Species(1, "Bulbasaur", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 45, 1, 33, 3, 22, 6, 74, 9, 73, 12, 75, 15, 77, 15, 79, 18, 402, 21, 36, 24, 230, 27, 235, 30, 388, 33, 38, 36, 76});
         list.put(pkmn.id(), pkmn);
+        pkmn = new Species(2, "Ivysaur", new BaseStats(60,62,63,80,80,60),142, new int[]{0,0,0,1,1,0}, 12, 4, new int[]{1,33,1,22});
+        list.put(pkmn.id(), pkmn);
+        pkmn = new Species(3, "Venusaur", new BaseStats(80,82,83,100,100,80),236, new int[]{0,0,0,2,1,0}, 12, 4, new int[]{1,33,1,22});
+        list.put(pkmn.id(), pkmn);
         pkmn = new Species(4, "Charmander", new BaseStats(39, 52, 43, 60, 50, 65), 62, new int[]{0, 0, 0, 0, 0, 1}, 10, 0, new Move[]{MoveList.getMove(52), MoveList.getMove(33), MoveList.getMove(51)});
         list.put(pkmn.id(), pkmn);
         pkmn = new Species(7, "Squirtle", new BaseStats(44, 48, 65, 50, 64, 43), 63, new int[]{0, 0, 1, 0, 0, 0}, 11, 0, new Move[]{MoveList.getMove(55), MoveList.getMove(33)});
@@ -21,7 +25,7 @@ public class SpeciesList {
         try {
             insertDBSpecies();
         } catch (SQLException e) {
-
+            System.out.println("Database connection failed, continueing with limited data");
         }
     }
 
@@ -67,6 +71,11 @@ public class SpeciesList {
 
     public static Pokemon getPoke(int userChoice) {
         return getPoke(userChoice, DEFAULT_LEVEL);
+    }
+    public static void DBtoInitializerCode() throws SQLException {
+            for (Species species : DBManager.getSpecies()) {
+                System.out.println(species.toCode());
+            }
     }
 }
 

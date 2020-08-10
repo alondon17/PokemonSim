@@ -29,6 +29,9 @@ public class BaseStats {
 
     }
 
+    public int[] arr() {
+        return new int[]{hp,physAttack,physDef,spAttack,spDef,speed};
+    }
     public int getHp() {
         return hp;
     }

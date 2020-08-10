@@ -2,16 +2,16 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Species {
-    private int specID;
-    private String specName;
-    private BaseStats baseStats;
     private final int expYield;
     private final int[] ivYield;
-    private int type1;
-    private int type2;
     ///TODO: evolve method
     ///TODO exp decider: exp group and exp to level calculator
     private final TreeMap<Integer, Move[]> learnSet = new TreeMap<>();
+    private int specID;
+    private String specName;
+    private BaseStats baseStats;
+    private int type1;
+    private int type2;
 
     public Species(int specID, String specName, BaseStats baseStats, int expYield, int[] ivYield, int type1, int type2, Move[] moves) {
         this.specID = specID;
@@ -67,6 +67,27 @@ public class Species {
         }
         if (sameLevelMoves.size() > 0)
             this.learnSet.put(currLevel, sameLevelMoves.toArray(new Move[0]));
+    }
+
+    private int[] fromLearnSet() {
+        int length = 0;
+        for (Move[] arr : learnSet.values()) {
+            length += arr.length;
+        }
+        int[] retarr = new int[length*2];
+        int looper = 0;
+        Iterator<Integer> keyiterator = learnSet.keySet().iterator();
+        for (Iterator<Move[]> valiterator = learnSet.values().iterator(); valiterator.hasNext(); ) {
+            Move[] arr = valiterator.next();
+            int index = keyiterator.next();
+            for (Move move : arr) {
+                retarr[looper] = index;
+                looper++;
+                retarr[looper] = move.id();
+                looper++;
+            }
+        }
+        return retarr;
     }
 
     public Move[] getMoves(int level) {
@@ -130,5 +151,11 @@ public class Species {
 
     public TreeMap<Integer, Move[]> getLearnSet() {
         return (TreeMap<Integer, Move[]>) learnSet.clone();
+    }
+
+    public String toCode() {
+        return "pkmn = new Species(" + specID + ", \"" + specName + "\", new BaseStats(" + Methoder.arrToCode(baseStats.arr()) + ")," + expYield + ", new int[]{" + Methoder.arrToCode(ivYield)
+        +"}, " + type1 + ", " + type2 + ", new int[]{"+Methoder.arrToCode(fromLearnSet())+"});"+
+        "\nlist.put(pkmn.id(), pkmn); ";
     }
 }
