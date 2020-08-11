@@ -14,11 +14,16 @@ public class BattleManager {
     private int[] recoil = {0, 0};
     private int[] pSwitchTo=new int[2];
     private Move[] pMove = new Move[2];
-    private Pokemon[] pOut = new Pokemon[2];
+    // array as p0's pkmns and then p1's
+    //TODO fix change in pOuts implementation across the code
+    private Pokemon[] pOut;
     private Trainer[] trainer = new Trainer[2];
     private Pokemon[][] player = new Pokemon[2][];
+    private int numOfPokemonOnField;
 
-    public BattleManager(Trainer trainer0, Trainer trainer1) {
+    public BattleManager(Trainer trainer0, Trainer trainer1,int numOfPokemonOnField) {
+        this.numOfPokemonOnField=numOfPokemonOnField;
+        pOut=new Pokemon[2*numOfPokemonOnField];
         trainer[0] = trainer0;
         trainer[1] = trainer1;
         this.player[0] = trainer0.getPokemons();
@@ -46,8 +51,13 @@ endBattle();
 
 
     public void startBattle() {
-        pOut[0] = player[0][0];
-        pOut[1] = player[1][0];
+
+        for (int i=0;i<numOfPokemonOnField;i++)
+        if(player[0].length>i&&player[0][i]!=null)
+            pOut[i] = player[0][i];
+        for (int i=0;i<numOfPokemonOnField;i++)
+            if(player[1].length>i&&player[1][i]!=null)
+                pOut[numOfPokemonOnField+i] = player[1][i];
         while (p0Alive > 0 && p1Alive > 0) {
             secondHasFainted=false;
             pChooseMove(0);

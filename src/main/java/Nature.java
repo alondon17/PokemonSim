@@ -26,4 +26,7 @@ public class Nature {
             throw new InputMismatchException("Illegal nature value");
         else this.num=num;
     }
+    public String toString(){
+        return s[num];
+    }
 }

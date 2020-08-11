@@ -321,6 +321,8 @@ public class Pokemon implements Comparable<Pokemon> {
 
     public String printStats() {
         this.calcStats();
-        return "HP: " + stats.getHp() + "\nAttack: " + stats.getPhysAttack() + "\nDefence: " + stats.getPhysDef() + "\nSpecial Attack: " + stats.getSpDef() + "\nSpecial Defence: " + stats.getSpDef() + "\nSpeed: " + stats.getSpeed();
+            return "HP: " + stats.getHp() + "    Attack: " + stats.getPhysAttack() + "    Defence: " + stats.getPhysDef() +
+                "\nSpecial Attack: " + stats.getSpDef() + "    Special Defence: " + stats.getSpDef() + "    Speed: " + stats.getSpeed()
+                +"\nNature: "+nature.toString()+"    Moves: "+moveset().toString();
     }
 }
