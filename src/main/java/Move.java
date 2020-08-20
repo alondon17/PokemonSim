@@ -6,7 +6,7 @@ public class Move {
     private boolean IsPhys;
     private int accuracy;
     private byte priority;
-    private Node<Effect> effects=null ;
+    private MoveFunction function=null ;
 
     public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy) {
         this.id = id;
@@ -16,9 +16,10 @@ public class Move {
         IsPhys = isPhys;
         this.accuracy = accuracy;
         priority=0;
+        function=MoveFunction.NO_EFFECT;
     }
 
-    public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy, byte priority, Node<Effect> effects) {
+    public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy, byte priority, MoveFunction function) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -26,7 +27,7 @@ public class Move {
         IsPhys = isPhys;
         this.accuracy = accuracy;
         this.priority = priority;
-        this.effects = effects;
+        this.function=function;
     }
 
     public int accuracy() {
@@ -55,14 +56,6 @@ public class Move {
 
     public int power() {
         return 0;
-    }
-
-    public Node<Effect> getEffects() {
-        return effects;
-    }
-
-    public void setEffects(Node<Effect> effects) {
-        this.effects = effects;
     }
 
     public byte priority() {

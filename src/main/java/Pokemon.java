@@ -1,54 +1,6 @@
-import java.sql.Array;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Random;
 
 public class Pokemon implements Comparable<Pokemon> {
-    final static int HP_LENGTH_PRINT = 30;
-    final static int stsBurn = 1;
-    final static int stsFreeze = 2;
-    final static int stsParalysis = 3;
-    final static int stsPoison = 4;
-    final static int stsSleep = 5;
-    final static int typeNormal = 1;
-    final static int typeFight = 2;
-    final static int typeFlying = 3;
-    final static int typePoison = 4;
-    final static int typeGround = 5;
-    final static int typeRock = 6;
-    final static int typeBug = 7;
-    final static int typeGhost = 8;
-    final static int typeSteel = 9;
-    final static int typeFire = 10;
-    final static int typeWater = 11;
-    final static int typeGrass = 12;
-    final static int typeElectric = 13;
-    final static int typePsychic = 14;
-    final static int typeIce = 15;
-    final static int typeDragon = 16;
-    final static int typeDark = 17;
-    final static int typeFairy = 18;
-    final static double[][] typeChart = {
-            {1, 1, 1, 1, 1, .5, 1, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {2, 1, .5, .5, 1, 2, .5, 0, 2, 1, 1, 1, 1, 0.5, 2, 1, 2, 0.5},
-            {1, 2, 1, 1, 1, .5, 2, 1, .5, 1, 1, 2, 0.5, 1, 1, 1, 1, 1},
-            {1, 1, 1, .5, .5, .5, 1, .5, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2},
-            {1, 1, 0, 2, 1, 2, .5, 1, 2, 2, 1, .5, 2, 1, 1, 1, 1, 1},
-            {1, .5, 2, 1, .5, 1, 2, 1, .5, 2, 1, 1, 1, 1, 2, 1, 1, 1},
-            {1, .5, .5, .5, 1, 1, 1, .5, .5, .5, 1, 2, 1, 2, 1, 1, 2, .5},
-            {0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, .5, 1},
-            {1, 1, 1, 1, 1, 2, 1, 1, .5, .5, .5, 1, .5, 1, 2, 1, 1, 2},
-            {1, 1, 1, 1, 1, .5, 2, 1, 2, .5, .5, 2, 1, 1, 2, .5, 1, 1},
-            {1, 1, 1, 1, 2, 2, 1, 1, 1, 2, .5, .5, 1, 1, 1, .5, 1, 1},
-            {1, 1, .5, .5, 2, 2, .5, 1, .5, .5, 2, .5, 1, 1, 1, .5, 1, 1},
-            {1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 2, .5, .5, 1, 1, .5, 1, 1},
-            {1, 2, 1, 2, 1, 1, 1, 1, .5, 1, 1, 1, 1, .5, 1, 1, 0, 1},
-            {1, 1, 2, 1, 2, 1, 1, 1, .5, .5, .5, 2, 1, 1, .5, 2, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, .5, 1, 1, 1, 1, 1, 1, 2, 1, 0},
-            {1, .5, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, .5, .5},
-            {1, 2, 1, .5, 1, 1, 1, 1, .5, .5, 1, 1, 1, 1, 1, 2, 2, 1}
-    };
-    final static Random rnd = new Random();
     private Species species;
     private int level;
     private int exp;
@@ -61,7 +13,7 @@ public class Pokemon implements Comparable<Pokemon> {
     private String nickname;
     private MoveSet moveSet;
     private final StatChanges statChanges = new StatChanges();
-    private final HashMap<EffectType,Effect> effects=new HashMap<>();
+    //private final HashMap< EffectType,Effect> effects=new HashMap<>();
 
     public Pokemon(Species species, int level, Move[] moves) {
         this.species = species;
@@ -101,11 +53,11 @@ public class Pokemon implements Comparable<Pokemon> {
 
     public void printVisualHP() {
         int i = 0;
-        int stop = (int) Math.ceil(((double) currHp / pkmnHp()) * HP_LENGTH_PRINT);
+        int stop = (int) Math.ceil(((double) currHp / pkmnHp()) * Consts.HP_LENGTH_PRINT);
         System.out.print("*");
         for (; i < stop; i++)
             System.out.print((char) 9632);
-        for (; i < HP_LENGTH_PRINT; i++)
+        for (; i < Consts.HP_LENGTH_PRINT; i++)
             System.out.print((char) 9633);
         System.out.print("*");
         System.out.println();
@@ -114,15 +66,15 @@ public class Pokemon implements Comparable<Pokemon> {
 
     public String statusCondToText() {
         switch (statusCondition) {
-            case stsBurn:
+            case Consts.stsBurn:
                 return "Burned";
-            case stsFreeze:
+            case Consts.stsFreeze:
                 return "Frozen";
-            case stsParalysis:
+            case Consts.stsParalysis:
                 return "Paralysed";
-            case stsPoison:
+            case Consts.stsPoison:
                 return "Poisoned";
-            case stsSleep:
+            case Consts.stsSleep:
                 return "Sleeping";
             default:
                 return "";
@@ -260,50 +212,50 @@ public class Pokemon implements Comparable<Pokemon> {
 
         return moveSet.get(index);
     }
-    private HashMap<EffectType,Effect> effects(){return effects;};
+    //private HashMap<EffectType,Effect> effects(){return effects;};
     //</editor-fold>
 
     public void battleStartReset(){
-        EffectManager.battleStartReset(effects);
+    //    EffectManager.battleStartReset(effects);
     }
 
     public static String typeToString(int type) {
         switch (type) {
-            case typeNormal:
+            case Consts.typeNormal:
                 return "Normal";
-            case typeFight:
+            case Consts.typeFight:
                 return "Fighting";
-            case typeFlying:
+            case Consts.typeFlying:
                 return "Flying";
-            case typePoison:
+            case Consts.typePoison:
                 return "Poison";
-            case typeGround:
+            case Consts.typeGround:
                 return "Ground";
-            case typeRock:
+            case Consts.typeRock:
                 return "Rock";
-            case typeBug:
+            case Consts.typeBug:
                 return "Bug";
-            case typeGhost:
+            case Consts.typeGhost:
                 return "Ghost";
-            case typeSteel:
+            case Consts.typeSteel:
                 return "Steel";
-            case typeFire:
+            case Consts.typeFire:
                 return "Fire";
-            case typeWater:
+            case Consts.typeWater:
                 return "Water";
-            case typeGrass:
+            case Consts.typeGrass:
                 return "Grass";
-            case typeElectric:
+            case Consts.typeElectric:
                 return "Electric";
-            case typePsychic:
+            case Consts.typePsychic:
                 return "Psychic";
-            case typeIce:
+            case Consts.typeIce:
                 return "Ice";
-            case typeDragon:
+            case Consts.typeDragon:
                 return "Dragon";
-            case typeDark:
+            case Consts.typeDark:
                 return "Dark";
-            case typeFairy:
+            case Consts.typeFairy:
                 return "Fairy";
         }
         return "Error";
@@ -323,6 +275,6 @@ public class Pokemon implements Comparable<Pokemon> {
         this.calcStats();
             return "HP: " + stats.getHp() + "    Attack: " + stats.getPhysAttack() + "    Defence: " + stats.getPhysDef() +
                 "\nSpecial Attack: " + stats.getSpDef() + "    Special Defence: " + stats.getSpDef() + "    Speed: " + stats.getSpeed()
-                +"\nNature: "+nature.toString()+"    Moves: "+moveset().toString();
+                +"\nNature: "+nature.toString()+"    Moves: "+moveset().moveSetString();
     }
 }

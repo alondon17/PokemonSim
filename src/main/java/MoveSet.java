@@ -100,4 +100,11 @@ public class MoveSet {
             numOfMoves++;
         }
     }
+    public String moveSetString(){
+        String s="";
+        for (int i = 0; i < numOfMoves; i++) {
+            s+=(i + 1) + ": " + moveSet[i].name() + "  " + ppSet[i] + "/" + moveSet[i].pp() + "PP   ";
+        }
+        return s;
+    }
 }
