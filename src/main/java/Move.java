@@ -6,7 +6,9 @@ public class Move {
     private boolean IsPhys;
     private int accuracy;
     private byte priority;
+    private byte target;
     private MoveFunction function=null ;
+    private int effectChance;
 
     public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy) {
         this.id = id;
@@ -16,6 +18,7 @@ public class Move {
         IsPhys = isPhys;
         this.accuracy = accuracy;
         priority=0;
+        target=Consts.target1NonUser;
         function=MoveFunction.NO_EFFECT;
     }
 
@@ -28,6 +31,7 @@ public class Move {
         this.accuracy = accuracy;
         this.priority = priority;
         this.function=function;
+        target=Consts.target1NonUser;
     }
 
     public int accuracy() {
@@ -66,4 +70,21 @@ public class Move {
         return false;
     }
 
+    public MoveFunction function() {
+        return function;
+    }
+
+    public byte target() {
+        return target;
+    }
+
+    public int effectChance() {
+        return effectChance;
+    }
+    public boolean doesTargetIndividuals(){
+        return switch (target) {
+            case Consts.targetBothSides, Consts.targetOpposeSide, Consts.targetUserSide -> false;
+            default -> true;
+        };
+    }
 }

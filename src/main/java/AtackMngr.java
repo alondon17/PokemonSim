@@ -3,35 +3,50 @@ import java.util.Random;
 public class AtackMngr {
     final static Random rnd = new Random();
 
-    public static int attack(Pokemon attacked, Pokemon attacker, Move move) {
+    public static int attack(Pokemon attacker, Pokemon[] attacked, TurnChoice turnChoice) {
         int thisHit = 0;
         int damage = 0;
-        if (attacker != attacked) {
-            System.out.println(attacker.name() + " used " + move.name() + " on " + attacked.name());
-            if (move instanceof MoveMultiHit) {
-                thisHit = multiHitAttack(attacked, attacker, (MoveMultiHit) move);
-            } else if (move instanceof MoveNorm) {
-                thisHit = normalAttack(attacked, attacker, move);
+        boolean hasHit=false;
+        Move move = turnChoice.getMove();
+//        if (attacker != attacked) {
+        System.out.println(attacker.name() + " used " + move.name());
+        if (move.doesTargetIndividuals())
+            for (Pokemon target : getTargets(attacked, turnChoice))
+                if (checkIfMoveHits(target, attacker, turnChoice))
+                    if (move.function().getMoveDoer().apply(attacker, PokeMain.battleManager.getpOut(), turnChoice, PokeMain.battleManager, move))
+                        hasHit=true;
+//            if (move instanceof MoveMultiHit) {
+//                thisHit = multiHitAttack(attacked, attacker, (MoveMultiHit) move);
+//            } else if (move instanceof MoveNorm) {
+//                thisHit = normalAttack(attacked, attacker, move);
+//
+//            }
 
-            }
+        damage += thisHit;
 
-            damage += thisHit;
-
-        }
+//        }
+        if (!hasHit) System.out.println("Move missed fic this");
         return damage;
     }
 
-    private static int normalAttack(Pokemon attacked, Pokemon attacker, Move move) {
-        return receiveHit(attacked, attacker, move);
+    private static Pokemon[] getTargets(Pokemon[] attacked, TurnChoice turnChoice) {
+        switch (turnChoice.getMove().target()) {
+            case Consts.target1NonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            default:throw new IllegalArgumentException("Not programed yet oopse");
+        }
     }
 
-    private static int multiHitAttack(Pokemon attacked, Pokemon attacker, MoveMultiHit move) {
+    private static int normalAttack(Pokemon attacked, Pokemon attacker, Move move, TurnChoice turnChoice) {
+        return receiveHit(attacked, attacker, move,turnChoice);
+    }
+
+    private static int multiHitAttack(Pokemon attacked, Pokemon attacker, MoveMultiHit move, TurnChoice turnChoice) {
         int numOfTimes = move.getNumOfHits();
         int totalDamage = 0;
         int thisHit;
         int j = 0;
         for (int i = 0; i < numOfTimes && attacked.isAlive(); i++) {
-            thisHit = normalAttack(attacked, attacker, move);
+            thisHit = normalAttack(attacked, attacker, move, turnChoice);
             totalDamage += thisHit;
             if (thisHit > 0) j++;
             if (i != numOfTimes - 1) {
@@ -45,9 +60,9 @@ public class AtackMngr {
     }
 
 
-    private static int receiveHit(Pokemon attacked, Pokemon attacker, Move move) {
+    public static int receiveHit(Pokemon attacked, Pokemon attacker, Move move, TurnChoice turnChoice) {
         int damage = 0;
-        if (checkIfMoveHits(attacked, attacker, move)) {
+        if (checkIfMoveHits(attacked, attacker, turnChoice)) {
 
             damage = damageCalc(attacked, attacker, move);
 
@@ -59,8 +74,9 @@ public class AtackMngr {
         return damage;
     }
 
-    private static boolean checkIfMoveHits(Pokemon attacked, Pokemon attacker, Move move) {
+    private static boolean checkIfMoveHits(Pokemon attacked, Pokemon attacker, TurnChoice turnChoice) {
         /// TODO text for paralize and flinch here
+        Move move = turnChoice.getMove();
         if (move.accuracy() > 100)
             return true;
         if (rnd.nextInt(100) <= move.accuracy() * accuracyChanges(attacked, attacker))
@@ -74,7 +90,7 @@ public class AtackMngr {
     }
 
     private static int damageCalc(Pokemon attacked, Pokemon attacker, Move move) {
-        double damage=0;
+        double damage = 0;
         switch (move.id()) {
             //dragon rage
             case 82:

@@ -18,16 +18,17 @@
 //    }
 //}
 enum MoveFunction {
-    NO_EFFECT((a,b,c,d,e)->{d.printPkmn(b);return true;}),
-    BRN((a,b,c,d,e)->a.isAlive()),
-    FRZ((a,b,c,d,e)->!a.isAlive()),
-    PAR((a,b,c,d,e)->!a.isAlive()),
-    PSN((a,b,c,d,e)->!a.isAlive()),
-    BPSN((a,b,c,d,e)->!a.isAlive()),
-    SLP((a,b,c,d,e)->!a.isAlive());
-    EffectApplicator<Pokemon,Pokemon[],TurnChoice,BattleManager,Move,Boolean> effectApplicator;
-    MoveFunction(EffectApplicator<Pokemon,Pokemon[],TurnChoice,BattleManager,Move, Boolean> effectApplicator){
-        this.effectApplicator=effectApplicator;
+    BPSN((a, b, c, d, e) -> !a.isAlive()),
+    BRN((a, b, c, d, e) -> true),
+    FRZ((a, b, c, d, e) -> !a.isAlive()),
+    NO_EFFECT((a, b, c, d, e) -> AtackMngr.receiveHit(b[c.getTargetloc()],a,e,c)>0),
+    PAR((a, b, c, d, e) -> !a.isAlive()),
+    PSN((a, b, c, d, e) -> !a.isAlive()),
+    SLP((a, b, c, d, e) -> !a.isAlive());
+    EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> effectApplicator;
+
+    MoveFunction(EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> effectApplicator) {
+        this.effectApplicator = effectApplicator;
     }
 
     public EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> getMoveDoer() {

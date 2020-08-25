@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class PokeSelector {
     final static int MAX_PKMN_IN_PARTY = 6;
     static Scanner scanner = new Scanner(System.in);
-    private static SpeciesList speciesList = new SpeciesList();
 
 
     public static Pokemon[] select() {
