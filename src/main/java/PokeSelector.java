@@ -12,7 +12,7 @@ public class PokeSelector {
         int i = 1;
         System.out.println("Pokemon number " + i + ": Insert pokeID or negative to quit");
         int userChoice = Methoder.getInt();
-        while (arr.size() < MAX_PKMN_IN_PARTY && userChoice > 0) {
+        while (arr.size() < MAX_PKMN_IN_PARTY && userChoice >= 0) {
             System.out.println("Choose pokemon's level");
             int level = Methoder.getInt();
             Pokemon pkmn = SpeciesList.getPoke(userChoice,level);

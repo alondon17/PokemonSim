@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Random;
 
 public class AtackMngr {
@@ -31,7 +33,9 @@ public class AtackMngr {
 
     private static Pokemon[] getTargets(Pokemon[] attacked, TurnChoice turnChoice) {
         switch (turnChoice.getMove().target()) {
-            case Consts.target1NonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            case Target.target1NonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            //TODO make case
+  //          case Target.targetUserAndAllies:return new Pokemon[]{Arrays.copyOfRange(attacked,)]};
             default:throw new IllegalArgumentException("Not programed yet oopse");
         }
     }

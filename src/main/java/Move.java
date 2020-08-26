@@ -3,23 +3,50 @@ public class Move {
     private int type;
     private String name;
     private int pp;
-    private boolean IsPhys;
+    private int power;
+    private boolean isPhys = false;
+    private boolean isStatus = false;
     private int accuracy;
     private byte priority;
     private byte target;
-    private MoveFunction function=null ;
+    private MoveFunction function;
     private int effectChance;
+
+    public Move(int id, int type, String name, int pp, int power, byte PhysSpecStatCode, int accuracy, byte priority, byte target, MoveFunction function, int effectChance) {
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.pp = pp;
+        this.power = power;
+        switch (PhysSpecStatCode) {
+            case 1:
+                isPhys = true;
+                break;
+            case 2:
+                break;
+            case 3:
+                isStatus = true;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + PhysSpecStatCode);
+        }
+        this.accuracy = accuracy;
+        this.priority = priority;
+        this.target = target;
+        this.function = function;
+        this.effectChance = effectChance;
+    }
 
     public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.pp = pp;
-        IsPhys = isPhys;
+        isPhys = isPhys;
         this.accuracy = accuracy;
-        priority=0;
-        target=Consts.target1NonUser;
-        function=MoveFunction.NO_EFFECT;
+        priority = 0;
+        target = Target.target1NonUser;
+        function = MoveFunction.NO_EFFECT;
     }
 
     public Move(int id, int type, String name, int pp, boolean isPhys, int accuracy, byte priority, MoveFunction function) {
@@ -27,12 +54,13 @@ public class Move {
         this.type = type;
         this.name = name;
         this.pp = pp;
-        IsPhys = isPhys;
+        isPhys = isPhys;
         this.accuracy = accuracy;
         this.priority = priority;
-        this.function=function;
-        target=Consts.target1NonUser;
+        this.function = function;
+        target = Target.target1NonUser;
     }
+
 
     public int accuracy() {
         return accuracy;
@@ -43,7 +71,7 @@ public class Move {
     }
 
     public boolean isPhys() {
-        return IsPhys;
+        return isPhys;
     }
 
     public int type() {
@@ -81,9 +109,10 @@ public class Move {
     public int effectChance() {
         return effectChance;
     }
-    public boolean doesTargetIndividuals(){
+
+    public boolean doesTargetIndividuals() {
         return switch (target) {
-            case Consts.targetBothSides, Consts.targetOpposeSide, Consts.targetUserSide -> false;
+            case Target.targetBothSides, Target.targetOpposeSide, Target.targetUserSide -> false;
             default -> true;
         };
     }

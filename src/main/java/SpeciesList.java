@@ -8,6 +8,8 @@ public class SpeciesList {
 
     static {
         Species pkmn;
+        pkmn = new Species(0, "Test", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 336});
+        list.put(pkmn.id(), pkmn);
         pkmn = new Species(1, "Bulbasaur", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 45, 1, 33, 3, 22, 6, 74, 9, 73, 12, 75, 15, 77, 15, 79, 18, 402, 21, 36, 24, 230, 27, 235, 30, 388, 33, 38, 36, 76});
         list.put(pkmn.id(), pkmn);
         pkmn = new Species(2, "Ivysaur", new BaseStats(60,62,63,80,80,60),142, new int[]{0,0,0,1,1,0}, 12, 4, new int[]{1,33,1,22});

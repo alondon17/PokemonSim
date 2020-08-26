@@ -18,13 +18,14 @@
 //    }
 //}
 enum MoveFunction {
-    BPSN((a, b, c, d, e) -> !a.isAlive()),
-    BRN((a, b, c, d, e) -> true),
-    FRZ((a, b, c, d, e) -> !a.isAlive()),
-    NO_EFFECT((a, b, c, d, e) -> AtackMngr.receiveHit(b[c.getTargetloc()],a,e,c)>0),
+    BPSN((attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0),
+    BRN((attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0),
+    FRZ((attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0),
+    NO_EFFECT((attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0),
     PAR((a, b, c, d, e) -> !a.isAlive()),
     PSN((a, b, c, d, e) -> !a.isAlive()),
-    SLP((a, b, c, d, e) -> !a.isAlive());
+    SLP((a, b, c, d, e) -> !a.isAlive()),
+    ATTACK1UP((attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0);
     EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> effectApplicator;
 
     MoveFunction(EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> effectApplicator) {

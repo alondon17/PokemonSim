@@ -16,7 +16,6 @@ public class BattleManager {
     private final Trainer[] trainer = new Trainer[2];
     private final Pokemon[][] player = new Pokemon[2][];
     private final int numOfPokemonOnField;
-    private final ArrayList<TurnChoice> choices = new ArrayList<>();
     private final TurnOrderer turnOrderer;
 
     public BattleManager(Trainer trainer0, Trainer trainer1, int numOfPokemonOnField) {
@@ -125,8 +124,6 @@ public class BattleManager {
         int moveChoice;
         int targetloc = -1;
         if (pOut[pokeIndex].moveset().isStruggle()) {
-            pMove[pokeIndex] = pOut[pokeIndex].moveset().get(5);
-            pChoice[pokeIndex] = Consts.MOVE_CODE;
             turnOrderer.put(new TurnChoice(Consts.MOVE_CODE, 5, getAnOpposing(pokeIndex), pOut[pokeIndex], pokeIndex));
             return true;
         }
@@ -135,14 +132,19 @@ public class BattleManager {
         if (!pOut[pokeIndex].existsMoveInPkmn(moveChoice - 1)) {
             return false;
         }
-        printOppPokemon(pokeIndex / numOfPokemonOnField);
-        while (!targetLegal(targetloc,pokeIndex,moveChoice)) {
-            targetloc = Methoder.getInt();
+        if(isOnly1Target(targetloc, pokeIndex, moveChoice)){
+            printOppPokemon(pokeIndex / numOfPokemonOnField);
+            while (!targetLegal(targetloc, pokeIndex, moveChoice)) {
+                targetloc = Methoder.getInt();
+            }
         }
-//        pMove[pokeIndex] = pOut[pokeIndex].moveset().get(pChoice[pokeIndex] - 1);
-//        pChoice[pokeIndex] = Consts.MOVE_CODE;
         turnOrderer.put(new TurnChoice(Consts.MOVE_CODE, moveChoice - 1, targetloc, pOut[pokeIndex], pokeIndex));
         return true;
+    }
+
+    //TODO create method
+    private boolean isOnly1Target(int targetloc, int pokeIndex, int moveChoice) {
+        return false;
     }
 
     //TODO create method
