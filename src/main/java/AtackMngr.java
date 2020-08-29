@@ -1,10 +1,12 @@
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Random;
 
 public class AtackMngr {
     final static Random rnd = new Random();
+    private static BattleManager battleManager;
 
+    public static void initialize(BattleManager battleManager){
+
+    }
     public static int attack(Pokemon attacker, Pokemon[] attacked, TurnChoice turnChoice) {
         int thisHit = 0;
         int damage = 0;
@@ -95,15 +97,18 @@ public class AtackMngr {
 
     private static int damageCalc(Pokemon attacked, Pokemon attacker, Move move) {
         double damage = 0;
-        switch (move.id()) {
+        switch (move.function()) {
             //dragon rage
-            case 82:
-                break;
+            case FIXED40:
+                return 40;
             default:
+                int power=switch (move.function()){
+                    default -> move.power();
+                };
                 double modifier = STAB(attacker, move) * typeAdv(attacked, move);
                 damage = ((2 * attacker.level() + 10) / 250.0);
                 damage *= (move.isPhys() ? (double) attacker.physAttack() / attacked.physDef() : (double) attacker.spAttack() / attacked.spDef());
-                damage = damage * move.power() + 2;
+                damage = damage * power + 2;
                 damage *= modifier;
 
         }

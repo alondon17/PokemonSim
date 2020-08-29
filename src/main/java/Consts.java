@@ -56,4 +56,5 @@ public class Consts {
     final static int SWITCH_CODE = 2;
     final static int VIEW_CODE = 3;
     final static int BAG_CODE = 4;
+    static EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> standardFunction=(attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0;
 }

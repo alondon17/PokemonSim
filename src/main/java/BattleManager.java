@@ -208,12 +208,11 @@ public class BattleManager {
         if (turnChoice.getBaseOption() == Consts.SWITCH_CODE) {
             switchAction(turnChoice);
         }
-        if (turnChoice.getBaseOption() == Consts.MOVE_CODE) {
+        else  if (turnChoice.getBaseOption() == Consts.MOVE_CODE) {
             int damage = AtackMngr.attack(pOut[turnChoice.getUserLoc()], pOut, turnChoice);
 
         }
-        printPokemonStatus(0);
-        printPokemonStatus(1);
+        printPokemonStatus();
 
     }
 
@@ -304,7 +303,11 @@ public class BattleManager {
         return index >= 0 &&
                 index < player[p].length;
     }
-
+    public void printPokemonStatus() {
+        for (int i = 0; i < pOut.length; i++) {
+            pOut[i].battlePrint();
+        }
+    }
     public void printPokemonStatus(int p) {
         pOut[p].battlePrint();
     }

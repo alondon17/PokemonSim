@@ -12,19 +12,19 @@ public class Move {
     private MoveFunction function;
     private int effectChance;
 
-    public Move(int id, int type, String name, int pp, int power, byte PhysSpecStatCode, int accuracy, byte priority, byte target, MoveFunction function, int effectChance) {
+    public Move(int id, int type, String name, int pp, int power, int PhysSpecStatCode, int accuracy, byte priority, byte target, MoveFunction function, int effectChance) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.pp = pp;
         this.power = power;
         switch (PhysSpecStatCode) {
-            case 1:
+            case 0:
                 isPhys = true;
                 break;
-            case 2:
+            case 1:
                 break;
-            case 3:
+            case 2:
                 isStatus = true;
                 break;
             default:

@@ -27,7 +27,8 @@ public class MoveList {
         list.put(move.id(),move);
         move =new MoveNorm(82,16,"Dragon Rage",0,false,100,10);
         list.put(move.id(),move);
-        move =new Move(336,1,"Howl",40,0, (byte) 3,101,(byte)0,Target.targetUserAndAllies,MoveFunction.ATTACK1UP,100);
+        move =new Move(336,1,"Howl",40,0, 2,101,(byte)0,
+                Target.targetUserAndAllies,MoveFunction.ATTACK1UP,100);
         list.put(move.id(),move);
     }
     public static Move getMove(int id){
