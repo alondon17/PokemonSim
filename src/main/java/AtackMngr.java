@@ -35,7 +35,9 @@ public class AtackMngr {
 
     private static Pokemon[] getTargets(Pokemon[] attacked, TurnChoice turnChoice) {
         switch (turnChoice.getMove().target()) {
-            case Target.target1NonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            case Target.singleNonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            case Target.none:return null;
+            case Target.user:return new Pokemon[]{attacked[turnChoice.getUserLoc()]};
             //TODO make case
   //          case Target.targetUserAndAllies:return new Pokemon[]{Arrays.copyOfRange(attacked,)]};
             default:throw new IllegalArgumentException("Not programed yet oopse");

@@ -1,17 +1,17 @@
 public class Target {
 
-    final static byte target1NonUser=0;
-    final static byte targetNone=1;
-    final static byte targetRandomOppose=2;
-    final static byte targetAllOppose=3;
-    final static byte targetAllOthers=4;
-    final static byte targetUser=5;
-    final static byte targetBothSides=6;
-    final static byte targetUserSide=7;
-    final static byte targetOpposeSide=8;
-    final static byte targetPartner=9;
-    final static byte targetAnUserPkmn=10;
-    final static byte targetAnOpposePkmn=11;
-    final static byte targetDirectlyOpposite=12;
-    final static byte targetUserAndAllies=13;
+    final static byte singleNonUser =0;
+    final static byte none=1;
+    final static byte randomOppose=2;
+    final static byte allOppose=3;
+    final static byte allOthers=4;
+    final static byte user=5;
+    final static byte bothSides =6;
+    final static byte userSide =7;
+    final static byte opposeSide =8;
+    final static byte partner=9;
+    final static byte anUserPkmn=10;
+    final static byte anOpposePkmn=11;
+    final static byte directlyOpposite=12;
+    final static byte userAndAllies =13;
 }

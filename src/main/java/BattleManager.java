@@ -268,21 +268,21 @@ public class BattleManager {
 
     //TODO fix pOut and implement TurnChoice
     //TODO consider changing to compareTo of TurnChoice
-    public boolean IsP0First() {
-        ///TODO implement priorities and abilities
-        if (pChoice[0] == Consts.SWITCH_CODE)
-            return true;
-        if (pChoice[1] == Consts.SWITCH_CODE)
-            return false;
-
-        assert pMove[0] != null : trainer[0].getName() + " didn't choose a move";
-        assert pMove[1] != null : trainer[1].getName() + " didn't choose a move";
-        if (pMove[0].priority() != pMove[1].priority())
-            return pMove[0].priority() > pMove[1].priority();
-        if (pOut[0].speed() != pOut[1].speed())
-            return pOut[0].speed() > pOut[1].speed();
-        return rnd.nextInt(2) == 1;
-    }
+//    public boolean IsP0First() {
+//        ///TODO implement priorities and abilities
+//        if (pChoice[0] == Consts.SWITCH_CODE)
+//            return true;
+//        if (pChoice[1] == Consts.SWITCH_CODE)
+//            return false;
+//
+//        assert pMove[0] != null : trainer[0].getName() + " didn't choose a move";
+//        assert pMove[1] != null : trainer[1].getName() + " didn't choose a move";
+//        if (pMove[0].priority() != pMove[1].priority())
+//            return pMove[0].priority() > pMove[1].priority();
+//        if (pOut[0].speed() != pOut[1].speed())
+//            return pOut[0].speed() > pOut[1].speed();
+//        return rnd.nextInt(2) == 1;
+//    }
 
     public void printMenu() {
         System.out.println(Consts.MOVE_CODE + ": choose a move your pokemon will do\n" +

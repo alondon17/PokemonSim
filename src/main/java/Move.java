@@ -45,7 +45,7 @@ public class Move {
         isPhys = isPhys;
         this.accuracy = accuracy;
         priority = 0;
-        target = Target.target1NonUser;
+        target = Target.singleNonUser;
         function = MoveFunction.NO_EFFECT;
     }
 
@@ -58,7 +58,7 @@ public class Move {
         this.accuracy = accuracy;
         this.priority = priority;
         this.function = function;
-        target = Target.target1NonUser;
+        target = Target.singleNonUser;
     }
 
 
@@ -112,7 +112,7 @@ public class Move {
 
     public boolean doesTargetIndividuals() {
         return switch (target) {
-            case Target.targetBothSides, Target.targetOpposeSide, Target.targetUserSide -> false;
+            case Target.bothSides, Target.opposeSide, Target.userSide -> false;
             default -> true;
         };
     }
