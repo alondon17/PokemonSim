@@ -50,7 +50,7 @@ public class BattleManager {
                 pOut[numOfPokemonOnField + i] = player[1][i];
 
         while (pAlive[0] > 0 && pAlive[1] > 0) {
-            secondHasFainted = false;
+
             pChooseMove(0);
             pChooseMove(1);
             while (turnOrderer.size() > 0) {
@@ -231,25 +231,25 @@ public class BattleManager {
         System.out.println("Go " + pOut[turnChoice.getUserLoc()].name() + "!");
     }
 
-    //TODO fix pOut and implement TurnChoice
-    //TODO reconsider this function's purpose
-    public void bothAlive() {
-        if (!pOut[isP0First ? 1 : 0].isAlive()) {
-            secondHasFainted = true;
-        }
-        if (pOut[0].isAlive() && pOut[1].isAlive())
-            return;
-        else if (!pOut[0].isAlive() && !pOut[1].isAlive())
-            //TODO code for this case
-            ;
-        else if (!pOut[0].isAlive()) {
-            if (chooseSwitchFainted(0)) return;
-            ///TODO combine both methods and implement actual switch of pokemons
-            ;
-        } else if (!pOut[1].isAlive()) {
-            if (chooseSwitchFainted(1)) return;
-        }
-    }
+//    //TODO fix pOut and implement TurnChoice
+//    //TODO reconsider this function's purpose
+//    public void bothAlive() {
+//        if (!pOut[isP0First ? 1 : 0].isAlive()) {
+//            secondHasFainted = true;
+//        }
+//        if (pOut[0].isAlive() && pOut[1].isAlive())
+//            return;
+//        else if (!pOut[0].isAlive() && !pOut[1].isAlive())
+//            //TODO code for this case
+//            ;
+//        else if (!pOut[0].isAlive()) {
+//            if (chooseSwitchFainted(0)) return;
+//            ///TODO combine both methods and implement actual switch of pokemons
+//            ;
+//        } else if (!pOut[1].isAlive()) {
+//            if (chooseSwitchFainted(1)) return;
+//        }
+//    }
 
     //TODO fix pOut and implement TurnChoice
     private boolean chooseSwitchFainted(int p) {
