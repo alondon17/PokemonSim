@@ -1,15 +1,8 @@
 import java.util.*;
 
 public class BattleManager {
-    Random rnd = new Random();
-    private int p0Alive;
-    private int p1Alive;
-    private boolean secondHasFainted;
-    private boolean isP0First;
+    private final int[] pAlive= {0,0};
     private final int[] pChoice = new int[2];
-    private final int[] recoil = {0, 0};
-    private final int[] pSwitchTo = new int[2];
-    private final Move[] pMove = new Move[2];
     // array as p0's pkmns and then p1's
     //TODO fix change in pOuts implementation across the code
     private final Pokemon[] pOut;
@@ -31,12 +24,12 @@ public class BattleManager {
             return;
         }
         for (int i = 0; i < player[0].length; i++) {
-            p0Alive++;
+            pAlive[0]++;
             player[0][i].battleStartReset();
 
         }
         for (int i = 0; i < player[1].length; i++) {
-            p1Alive++;
+            pAlive[1]++;
             player[1][i].battleStartReset();
 
         }
@@ -56,7 +49,7 @@ public class BattleManager {
             if (player[1].length > i && player[1][i] != null)
                 pOut[numOfPokemonOnField + i] = player[1][i];
 
-        while (p0Alive > 0 && p1Alive > 0) {
+        while (pAlive[0] > 0 && pAlive[1] > 0) {
             secondHasFainted = false;
             pChooseMove(0);
             pChooseMove(1);
@@ -84,6 +77,10 @@ public class BattleManager {
     //TODO implement
     public void endOfTurn() {
         //TODO implement switch pokemno correctly
+        for(int pokeIndex=0;pokeIndex<numOfPokemonOnField*2;pokeIndex++){
+            if(pOut[pokeIndex]==null||!pOut[pokeIndex].isAlive())
+                chooseSwitchFainted(pokeIndex);
+        }
     }
 
     public void pChooseMove(int player) {
@@ -129,38 +126,49 @@ public class BattleManager {
         }
         pOut[pokeIndex].moveset().printMoveSet();
         moveChoice = Methoder.getInt();
+
         if (!pOut[pokeIndex].existsMoveInPkmn(moveChoice - 1)) {
             return false;
         }
-        if(isOnly1Target(targetloc, pokeIndex, moveChoice)){
-            printOppPokemon(pokeIndex / numOfPokemonOnField);
-            while (!targetLegal(targetloc, pokeIndex, moveChoice)) {
+        Move move=pOut[pokeIndex].move(moveChoice);
+        if(!isOnly1Target(targetloc, pokeIndex, move)){
+            printOppPokemon(pokeIndex);
+            while (!targetLegal(targetloc, pokeIndex, move)) {
                 targetloc = Methoder.getInt();
             }
+        }
+        else{
+            //TODO change bad default
+            targetloc=pokeIndex<numOfPokemonOnField?pokeIndex+numOfPokemonOnField:pokeIndex-numOfPokemonOnField;
         }
         turnOrderer.put(new TurnChoice(Consts.MOVE_CODE, moveChoice - 1, targetloc, pOut[pokeIndex], pokeIndex));
         return true;
     }
 
-    //TODO create method
-    private boolean isOnly1Target(int targetloc, int pokeIndex, int moveChoice) {
+
+    private boolean isOnly1Target(int targetloc, int pokeIndex,Move move) {
+        if(numOfPokemonOnField==1)return true;
+        //TODO prepare for other cases
         return false;
     }
 
-    //TODO create method
-    private boolean targetLegal(int targetloc,int pokeIndex,int moveChoice) {
-        return true;
+
+    private boolean targetLegal(int targetloc,int pokeIndex,Move move) {
+        if(targetloc<0||targetloc>=numOfPokemonOnField*2)
+            return false;
+        //TODO create cases
+        return pOut[targetloc].isAlive();
     }
 
-    private void printOppPokemon(int i) {
+    private void printOppPokemon(int pokeIndex) {
         System.out.println("choose Pokemon to target");
-        System.out.println("P0" + (i / numOfPokemonOnField == 0 ? " User's Side" : " Opponent's Side"));
+        System.out.println("P0" + (pokeIndex / numOfPokemonOnField == 0 ? " User's Side" : " Opponent's Side"));
         for (int j = 0; j < numOfPokemonOnField; j++) {
-            System.out.println(j + ": " + pOut[j].name() + (i == j ? "SELF" : ""));
+            System.out.println(j + ": " + pOut[j].name() + (pokeIndex == j ? "SELF" : ""));
         }
-        System.out.println("P1" + (i / numOfPokemonOnField == 1 ? " User's Side" : " Opponent's Side"));
+        System.out.println("P1" + (pokeIndex / numOfPokemonOnField == 1 ? " User's Side" : " Opponent's Side"));
         for (int j = numOfPokemonOnField; j < pOut.length; j++) {
-            System.out.println(j + ": " + pOut[j].name() + (i == j ? " SELF" : ""));
+            System.out.println(j + ": " + pOut[j].name() + (pokeIndex == j ? " SELF" : ""));
         }
     }
 
@@ -247,12 +255,12 @@ public class BattleManager {
     private boolean chooseSwitchFainted(int p) {
         System.out.println(pOut[p].name() + " fainted");
         if (p == 0) {
-            p0Alive--;
-            if (p0Alive == 0)
+            pAlive[0]--;
+            if (pAlive[0] == 0)
                 return true;
         } else {
-            p1Alive--;
-            if (p1Alive == 0)
+            pAlive[1]--;
+            if (pAlive[1] == 0)
                 return true;
         }
         System.out.println("Choose which pokemon to send out");
