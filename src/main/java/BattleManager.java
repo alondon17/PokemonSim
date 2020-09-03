@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class BattleManager {
-    private final int[] pAlive= {0,0};
+    private final int[] pAlive = {0, 0};
     private final int[] pChoice = new int[2];
     // array as p0's pkmns and then p1's
     //TODO fix change in pOuts implementation across the code
@@ -41,7 +41,7 @@ public class BattleManager {
 
 
     public void startBattle() {
-
+        AtackMngr.initialize(this);
         for (int i = 0; i < numOfPokemonOnField; i++)
             if (player[0].length > i && player[0][i] != null)
                 pOut[i] = player[0][i];
@@ -77,8 +77,8 @@ public class BattleManager {
     //TODO implement
     public void endOfTurn() {
         //TODO implement switch pokemno correctly
-        for(int pokeIndex=0;pokeIndex<numOfPokemonOnField*2;pokeIndex++){
-            if(pOut[pokeIndex]==null||!pOut[pokeIndex].isAlive())
+        for (int pokeIndex = 0; pokeIndex < numOfPokemonOnField * 2; pokeIndex++) {
+            if (pOut[pokeIndex] == null || !pOut[pokeIndex].isAlive())
                 chooseSwitchFainted(pokeIndex);
         }
     }
@@ -130,31 +130,30 @@ public class BattleManager {
         if (!pOut[pokeIndex].existsMoveInPkmn(moveChoice - 1)) {
             return false;
         }
-        Move move=pOut[pokeIndex].move(moveChoice);
-        if(!isOnly1Target(targetloc, pokeIndex, move)){
+        Move move = pOut[pokeIndex].move(moveChoice);
+        if (!isOnly1Target(targetloc, pokeIndex, move)) {
             printOppPokemon(pokeIndex);
             while (!targetLegal(targetloc, pokeIndex, move)) {
                 targetloc = Methoder.getInt();
             }
-        }
-        else{
+        } else {
             //TODO change bad default
-            targetloc=pokeIndex<numOfPokemonOnField?pokeIndex+numOfPokemonOnField:pokeIndex-numOfPokemonOnField;
+            targetloc = pokeIndex < numOfPokemonOnField ? pokeIndex + numOfPokemonOnField : pokeIndex - numOfPokemonOnField;
         }
         turnOrderer.put(new TurnChoice(Consts.MOVE_CODE, moveChoice - 1, targetloc, pOut[pokeIndex], pokeIndex));
         return true;
     }
 
 
-    private boolean isOnly1Target(int targetloc, int pokeIndex,Move move) {
-        if(numOfPokemonOnField==1)return true;
+    private boolean isOnly1Target(int targetloc, int pokeIndex, Move move) {
+        if (numOfPokemonOnField == 1) return true;
         //TODO prepare for other cases
         return false;
     }
 
 
-    private boolean targetLegal(int targetloc,int pokeIndex,Move move) {
-        if(targetloc<0||targetloc>=numOfPokemonOnField*2)
+    private boolean targetLegal(int targetloc, int pokeIndex, Move move) {
+        if (targetloc < 0 || targetloc >= numOfPokemonOnField * 2)
             return false;
         //TODO create cases
         return pOut[targetloc].isAlive();
@@ -215,8 +214,7 @@ public class BattleManager {
     public void pTurn(TurnChoice turnChoice) {
         if (turnChoice.getBaseOption() == Consts.SWITCH_CODE) {
             switchAction(turnChoice);
-        }
-        else  if (turnChoice.getBaseOption() == Consts.MOVE_CODE) {
+        } else if (turnChoice.getBaseOption() == Consts.MOVE_CODE) {
             int damage = AtackMngr.attack(pOut[turnChoice.getUserLoc()], pOut, turnChoice);
 
         }
@@ -253,8 +251,8 @@ public class BattleManager {
 
     //TODO fix pOut and implement TurnChoice
     private boolean chooseSwitchFainted(int p) {
-        System.out.println(pOut[p].name() + " fainted");
-        if (p == 0) {
+//TODO thing of case of revive
+        if (p / numOfPokemonOnField == 0) {
             pAlive[0]--;
             if (pAlive[0] == 0)
                 return true;
@@ -311,11 +309,13 @@ public class BattleManager {
         return index >= 0 &&
                 index < player[p].length;
     }
+
     public void printPokemonStatus() {
         for (int i = 0; i < pOut.length; i++) {
             pOut[i].battlePrint();
         }
     }
+
     public void printPokemonStatus(int p) {
         pOut[p].battlePrint();
     }
@@ -327,4 +327,13 @@ public class BattleManager {
     public Pokemon[] getpOut() {
         return pOut;
     }
+
+//    public void notifyFainted() {
+//        for (int i = 0; i < pOut.length; i++) {
+//            Pokemon pkmn = pOut[i];
+//            if (pkmn != null && !pkmn.isAlive())
+//                pOut[i]=null;
+//
+//        }
+//    }
 }

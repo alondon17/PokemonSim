@@ -1,16 +1,20 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class AtackMngr {
     final static Random rnd = new Random();
     private static BattleManager battleManager;
+    private static int numOfPokemonOnField;
 
-    public static void initialize(BattleManager battleManager){
-
+    public static void initialize(BattleManager battleManager) {
+        AtackMngr.battleManager = battleManager;
+        numOfPokemonOnField=battleManager.getNumOfPokemonOnField();
     }
+
     public static int attack(Pokemon attacker, Pokemon[] attacked, TurnChoice turnChoice) {
         int thisHit = 0;
         int damage = 0;
-        boolean hasHit=false;
+        boolean hasHit = false;
         Move move = turnChoice.getMove();
 //        if (attacker != attacked) {
         System.out.println(attacker.name() + " used " + move.name());
@@ -18,7 +22,7 @@ public class AtackMngr {
             for (Pokemon target : getTargets(attacked, turnChoice))
                 if (checkIfMoveHits(target, attacker, turnChoice))
                     if (move.function().getMoveDoer().apply(attacker, PokeMain.battleManager.getpOut(), turnChoice, PokeMain.battleManager, move))
-                        hasHit=true;
+                        hasHit = true;
 //            if (move instanceof MoveMultiHit) {
 //                thisHit = multiHitAttack(attacked, attacker, (MoveMultiHit) move);
 //            } else if (move instanceof MoveNorm) {
@@ -35,50 +39,61 @@ public class AtackMngr {
 
     private static Pokemon[] getTargets(Pokemon[] attacked, TurnChoice turnChoice) {
         switch (turnChoice.getMove().target()) {
-            case Target.singleNonUser:return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
-            case Target.none:return null;
-            case Target.user:return new Pokemon[]{attacked[turnChoice.getUserLoc()]};
-            //TODO make case
-  //          case Target.targetUserAndAllies:return new Pokemon[]{Arrays.copyOfRange(attacked,)]};
-            default:throw new IllegalArgumentException("Not programed yet oopse");
+            case Target.singleNonUser:
+                return new Pokemon[]{attacked[turnChoice.getTargetloc()]};
+            case Target.none:
+                return null;
+            case Target.user:
+                return new Pokemon[]{attacked[turnChoice.getUserLoc()]};
+        case Target.userAndAllies:return turnChoice.getUserLoc()/numOfPokemonOnField==0?
+                Arrays.copyOfRange(attacked,0,numOfPokemonOnField):
+                Arrays.copyOfRange(attacked,numOfPokemonOnField,numOfPokemonOnField*2);
+            default:
+                throw new IllegalArgumentException("Not programed yet oopse");
         }
     }
 
-    private static int normalAttack(Pokemon attacked, Pokemon attacker, Move move, TurnChoice turnChoice) {
-        return receiveHit(attacked, attacker, move,turnChoice);
-    }
+//    private static int normalAttack(Pokemon attacked, Pokemon attacker, Move move, TurnChoice turnChoice) {
+//        return receiveHit(attacked, attacker, move, turnChoice);
+//    }
 
-    private static int multiHitAttack(Pokemon attacked, Pokemon attacker, MoveMultiHit move, TurnChoice turnChoice) {
-        int numOfTimes = move.getNumOfHits();
-        int totalDamage = 0;
-        int thisHit;
-        int j = 0;
-        for (int i = 0; i < numOfTimes && attacked.isAlive(); i++) {
-            thisHit = normalAttack(attacked, attacker, move, turnChoice);
-            totalDamage += thisHit;
-            if (thisHit > 0) j++;
-            if (i != numOfTimes - 1) {
-                attacked.battlePrint();
-                System.out.println();
-            }
-
-        }
-        System.out.println("This move hit " + j + " times!");
-        return totalDamage;
-    }
+//    private static int multiHitAttack(Pokemon attacked, Pokemon attacker, MoveMultiHit move, TurnChoice turnChoice) {
+//        int numOfTimes = move.getNumOfHits();
+//        int totalDamage = 0;
+//        int thisHit;
+//        int j = 0;
+//        for (int i = 0; i < numOfTimes && attacked.isAlive(); i++) {
+//            thisHit = normalAttack(attacked, attacker, move, turnChoice);
+//            totalDamage += thisHit;
+//            if (thisHit > 0) j++;
+//            if (i != numOfTimes - 1) {
+//                attacked.battlePrint();
+//                System.out.println();
+//            }
+//
+//        }
+//        System.out.println("This move hit " + j + " times!");
+//        return totalDamage;
+//    }
 
 
     public static int receiveHit(Pokemon attacked, Pokemon attacker, Move move, TurnChoice turnChoice) {
         int damage = 0;
-        if (checkIfMoveHits(attacked, attacker, turnChoice)) {
+        if (attacked.isAlive())
+             {
 
-            damage = damageCalc(attacked, attacker, move);
+                damage = damageCalc(attacked, attacker, move);
 
-            attacked.setCurrHp(attacked.currHp() - damage);
-            if (attacked.currHp() < 0)
-                attacked.setCurrHp(0);
+                attacked.setCurrHp(attacked.currHp() - damage);
+                if (attacked.currHp() < 0) {
+                    attacked.setCurrHp(0);
+                    System.out.println(attacked.name() + " fainted");
+                    //TODO set pokemon as null in pOut
 
-        }
+                }
+
+
+            }
         return damage;
     }
 
@@ -104,7 +119,7 @@ public class AtackMngr {
             case FIXED40:
                 return 40;
             default:
-                int power=switch (move.function()){
+                int power = switch (move.function()) {
                     default -> move.power();
                 };
                 double modifier = STAB(attacker, move) * typeAdv(attacked, move);
