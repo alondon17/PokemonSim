@@ -10,7 +10,10 @@ static int aLoc;
 static int bLoc;
 static byte[][] tilemap;
     public static void main(String[] args) {
-
+        JFrame frame = new Random10x10(Consts.typeChart);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 3
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH) ;// 6
+        frame.setVisible(true);
 
     }
 
