@@ -52,10 +52,10 @@ public class Random10x10 extends JFrame { // This is the window class
                 default -> ConsoleColors.BLACK + ((char) 9632) + ConsoleColors.RESET;
 
             }); // This puts the number in place
-            area
+
             area.setEditable(false); // This prevents the user from changing the matrix
             this.add(area); // This puts the number into the gridspace
-            this.pa
+
         }
     }
 }
