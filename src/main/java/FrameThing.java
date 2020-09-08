@@ -2,16 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FrameThing extends JFrame {
+    public Playingfield playingfield;
     public FrameThing() {
-        Playingfield playingfield = new Playingfield(Consts.typeChart);
-        this.setBounds(0, 0, 900, 900);
-        this.setBounds(0, 0, 900, 900);
+        playingfield = new Playingfield(Consts.typeChart,this);
+        this.setBounds(0, 0, 400, 400);
         this.setBackground(Color.GRAY);
-        this.setResizable(false);
+        this.setResizable(true);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+this.setFocusable(true);
+
+        addKeyListener(playingfield);
         this.add(playingfield);
-        playingfield.addKeyListener();
+
+
     }
 
 
