@@ -5,15 +5,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Playingfield extends JPanel implements KeyListener {
     int offsetx = 0;
     int offsety = 0;
     JFrame parent;
-    int sizex = 10;
-    int sizey = 10;
-    int xLoc = 9;
-    int yLoc = 9;
+    int sizex = 40;
+    int sizey = 40;
+    int xLoc = 0;
+    int yLoc = 0;
     double[][] tilemap;
     Color bordo = new Color(120, 0, 0);
     Color lightred = new Color(250, 128, 114);
@@ -23,19 +24,34 @@ public class Playingfield extends JPanel implements KeyListener {
     private int[][] playinggrid = new int[10][10];
     private int[] playerX = new int[10];
     private int[] playerY = new int[10];
-    private Image tile1;
-    private Image tile2;
+    private BufferedImage playerSprite;
+    private static BufferedImage playerSpriteMap;
+
+    static {
+        try {
+            playerSpriteMap = ImageIO.read(new File("src/main/java/spriteMap.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static BufferedImage brownWithGrassTile;
+
+    static {
+        try {
+            brownWithGrassTile = ImageIO.read(new File("src/main/java/grassTile.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/java/pokemon.png");
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
         this.tilemap = tilemap;
         this.parent = parent;
-        try {
-            File pathToFile = new File("./image.png");
-            tile1 = ImageIO.read(pathToFile);
-        } catch (Exception ex) {
-            System.out.println("oh");
-        }
-        tile2=Toolkit.getDefaultToolkit().getImage("image.png");
+        playerSprite=playerSpriteMap.getSubimage(0,0,32,32);
+
     }
 
     public boolean isWall(double val) {
@@ -69,24 +85,28 @@ public class Playingfield extends JPanel implements KeyListener {
 //            playerIcon.paintIcon(this, g, playerX[1], playerY[1]);
         doMoveActionRender(g);
 
+
     }
 
     public void doMoveActionRender(Graphics g) {
         int yLength = tilemap.length;
         int xLength = tilemap[0].length;
-
+int xPlayer=-999;
+int yPlayer=-999;
         int yRenderloc = 0;
         for (int y = yLoc - Consts.aRenderDis; y <= yLoc + Consts.aRenderDis; y++) {
             int xRenderloc = 0;
             for (int x = xLoc - Consts.bRenderDis; x <= xLoc + Consts.bRenderDis; x++) {
                 Color color=null;
-                if (y == yLoc && x == xLoc)
-                    g.drawImage(tile2, offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey, this);
-                else if (y < 0 || yLength <= y || x < 0 || xLength <= x)
+                if (y == yLoc && x == xLoc) {
+                    xPlayer=xRenderloc;
+                    yPlayer=yRenderloc;
+                }if (y < 0 || yLength <= y || x < 0 || xLength <= x)
                     color = Color.GRAY;
                 else {
                     switch ((int) (tilemap[y][x] * 2)) {
-                        case 1 -> color = (lightred);
+                        case 1 -> g.drawImage(brownWithGrassTile, offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey, this);
+
                         case 0 -> color = (bordo);
                         case 2 -> color = (Color.WHITE);
                         case 4 -> color = (Color.GREEN);
@@ -101,6 +121,8 @@ public class Playingfield extends JPanel implements KeyListener {
             yRenderloc++;
 
         }
+        if(xPlayer!=-999)
+        g.drawImage(playerSprite, offsetx + xPlayer * sizex, offsety + yPlayer * sizey, sizex, sizey, this);
 
     }
 
@@ -115,8 +137,9 @@ public class Playingfield extends JPanel implements KeyListener {
         if (!isBusy) {
             isBusy = true;
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_DOWN -> moveChar(0, 1);
-                case KeyEvent.VK_UP -> moveChar(0, -1);
+                case KeyEvent.VK_DOWN -> {moveChar(0, 1);
+                    playerSprite=playerSpriteMap.getSubimage(0,0,32,32);}
+                case KeyEvent.VK_UP -> {moveChar(0, -1);playerSprite=playerSpriteMap.getSubimage(0,96,32,32);}
                 case KeyEvent.VK_LEFT -> moveChar(-1, 0);
                 case KeyEvent.VK_RIGHT -> moveChar(1, 0);
             }

@@ -27,8 +27,8 @@ public class Consts {
     final static int typeDark = 17;
     final static int typeFairy = 18;
     final static Random rnd = new Random();
-    final static int aRenderDis = 32;
-    final static int bRenderDis = 32;
+    final static int aRenderDis = 9;
+    final static int bRenderDis = 9;
     final static byte[][] tilemap1={
             {0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,2}};
