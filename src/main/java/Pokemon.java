@@ -52,6 +52,7 @@ public class Pokemon implements Comparable<Pokemon> {
     }
 
     public void printVisualHP() {
+        //TODO add color
         int i = 0;
         int stop = (int) Math.ceil(((double) currHp / pkmnHp()) * Consts.HP_LENGTH_PRINT);
         System.out.print("*");

@@ -11,8 +11,8 @@ public class Playingfield extends JPanel implements KeyListener {
     int offsetx = 0;
     int offsety = 0;
     JFrame parent;
-    int sizex = 40;
-    int sizey = 40;
+    int sizex = Consts.xTileSize;
+    int sizey = Consts.yTileSize;
     int xLoc = 0;
     int yLoc = 0;
     double[][] tilemap;
@@ -29,7 +29,7 @@ public class Playingfield extends JPanel implements KeyListener {
 
     static {
         try {
-            playerSpriteMap = ImageIO.read(new File("src/main/java/spriteMap.png"));
+            playerSpriteMap = ImageIO.read(new File("src/main/images/spriteMap.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,13 +39,13 @@ public class Playingfield extends JPanel implements KeyListener {
 
     static {
         try {
-            brownWithGrassTile = ImageIO.read(new File("src/main/java/grassTile.png"));
+            brownWithGrassTile = ImageIO.read(new File("src/main/images/grassTile.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/java/pokemon.png");
+    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/images/pokemon.png");
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
         this.tilemap = tilemap;
@@ -140,8 +140,8 @@ int yPlayer=-999;
                 case KeyEvent.VK_DOWN -> {moveChar(0, 1);
                     playerSprite=playerSpriteMap.getSubimage(0,0,32,32);}
                 case KeyEvent.VK_UP -> {moveChar(0, -1);playerSprite=playerSpriteMap.getSubimage(0,96,32,32);}
-                case KeyEvent.VK_LEFT -> moveChar(-1, 0);
-                case KeyEvent.VK_RIGHT -> moveChar(1, 0);
+                case KeyEvent.VK_LEFT -> {moveChar(-1, 0);playerSprite=playerSpriteMap.getSubimage(0,32,32,32);}
+                case KeyEvent.VK_RIGHT -> {moveChar(1, 0);playerSprite=playerSpriteMap.getSubimage(0,64,32,32);}
             }
             System.out.println(e.getKeyCode());
             doMoveActionRender(getGraphics());
