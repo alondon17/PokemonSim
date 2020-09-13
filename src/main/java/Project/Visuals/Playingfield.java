@@ -59,7 +59,7 @@ public class Playingfield extends JPanel implements KeyListener {
         this.tilemap = tilemap;
         this.parent = parent;
         playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
-
+setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
     }
 
     public boolean isWall(double val) {
@@ -195,14 +195,23 @@ public class Playingfield extends JPanel implements KeyListener {
         System.out.println(e.getKeyCode());
         doMoveActionRender(getGraphics());
         if (isBattle(tilemap[yLoc][xLoc])) {
+            this.setVisible(false);
             BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
-            if (battleManager.startBattle()) {
-                System.out.println("Success");
+            try{
+                if (battleManager.startBattle()) {
+                    System.out.println("Success");
+                } else {
+                    xLoc = 0;
+                    yLoc = 0;
+                }
+            }catch (Exception exception){
+                xLoc = 0;
+                yLoc = 0;
             }
-            else {
-                xLoc=0;
-                yLoc=0;
+            finally {
+                doMoveActionRender(getGraphics());
             }
+            setVisible(true);
         }
 
     }

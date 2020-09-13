@@ -7,23 +7,26 @@ import java.awt.*;
 
 public class FrameThing extends JFrame {
     public Playingfield playingfield;
+
     public FrameThing() {
-        playingfield = new Playingfield(Consts.typeChart,this);
-        addKeyListener(playingfield);
-        this.add(playingfield);this.setBounds(0, 0, 600, 600);
+        super("pokemon");
+        this.setSize(Consts.xTileSize*Consts.aRenderDis*2+16,Consts.yTileSize*Consts.bRenderDis*2+39);
+        playingfield = new Playingfield(Consts.typeChart, this);
+        JLayeredPane layeredPane = new JLayeredPane();
+        this.addKeyListener(playingfield);
+
+
+        layeredPane.add(playingfield, JLayeredPane.DEFAULT_LAYER);
+
         this.setBackground(Color.GRAY);
         this.setResizable(true);
         this.setVisible(true);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-this.setFocusable(true);
-
-
-
+        this.setFocusable(true);
+        this.add(layeredPane);
 
     }
-
-
 
 
 }
