@@ -27,7 +27,7 @@ public class MoveList {
         list.put(move.id(),move);
         move =new MoveNorm(55,11,"Water Gun",40,false,100,25);
         list.put(move.id(),move);
-        move =new MoveNorm(82,16,"Dragon Rage",0,false,100,10);
+        move =new Move(82,16,"Dragon Rage",10,0,1,100,(byte)0,Target.singleNonUser,MoveFunction.FIXED40,100);
         list.put(move.id(),move);
         move =new Move(336,1,"Howl",40,0, 2,101,(byte)0,
                 Target.userAndAllies,MoveFunction.ATTACK1UP,100);

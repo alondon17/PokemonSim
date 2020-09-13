@@ -1,5 +1,6 @@
 package Project.Visuals;
 
+import Project.*;
 import Project.SystemStuff.Consts;
 
 import javax.imageio.ImageIO;
@@ -14,6 +15,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Playingfield extends JPanel implements KeyListener {
+    private static BufferedImage playerSpriteMap;
+    private static BufferedImage brownWithGrassTile;
+    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/images/pokemon.png");
+
+    static {
+        try {
+            playerSpriteMap = ImageIO.read(new File("src/main/images/spriteMap.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static {
+        try {
+            brownWithGrassTile = ImageIO.read(new File("src/main/images/grassTile.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     int offsetx = 0;
     int offsety = 0;
     JFrame parent;
@@ -31,28 +52,7 @@ public class Playingfield extends JPanel implements KeyListener {
     private int[] playerX = new int[10];
     private int[] playerY = new int[10];
     private BufferedImage playerSprite;
-    private static BufferedImage playerSpriteMap;
-    private HashMap<Integer,ArrayList<Runnable>> layers=new HashMap<>();
-
-    static {
-        try {
-            playerSpriteMap = ImageIO.read(new File("src/main/images/spriteMap.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static BufferedImage brownWithGrassTile;
-
-    static {
-        try {
-            brownWithGrassTile = ImageIO.read(new File("src/main/images/grassTile.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/images/pokemon.png");
+    private HashMap<Integer, ArrayList<Runnable>> layers = new HashMap<>();
 
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
@@ -66,6 +66,10 @@ public class Playingfield extends JPanel implements KeyListener {
         return val == 2;
     }
 
+    public boolean isBattle(double val) {
+        return val == 0.5;
+    }
+
     public void moveChar(int x, int y) {
         if (y + yLoc >= 0 && y + yLoc < tilemap.length && x + xLoc >= 0 && x + xLoc < tilemap[0].length && !isWall(tilemap[y + yLoc][x + xLoc])) {
             yLoc += y;
@@ -74,6 +78,7 @@ public class Playingfield extends JPanel implements KeyListener {
 
         }
         this.repaint();
+
     }
 
     public void paint(Graphics g) {
@@ -90,8 +95,8 @@ public class Playingfield extends JPanel implements KeyListener {
 //            playerIcon = new ImageIcon("src/images/playerIcon.png");
 //            playerIcon.paintIcon(this, g, playerX[1], playerY[1]);
         doMoveActionRender(g);
-        for (ArrayList<Runnable> layer:layers.values()) {
-            for (Runnable draw:layer
+        for (ArrayList<Runnable> layer : layers.values()) {
+            for (Runnable draw : layer
             ) {
                 draw.run();
             }
@@ -143,7 +148,9 @@ public class Playingfield extends JPanel implements KeyListener {
         if (xPlayer != -999) {
             int finalXPlayer = xPlayer;
             int finalYPlayer = yPlayer;
-            addMethod(1,()->{g.drawImage(playerSprite, offsetx + finalXPlayer * sizex, offsety + finalYPlayer * sizey, sizex, sizey, this);});
+            addMethod(1, () -> {
+                g.drawImage(playerSprite, offsetx + finalXPlayer * sizex, offsety + finalYPlayer * sizey, sizex, sizey, this);
+            });
         }
 
 
@@ -160,7 +167,7 @@ public class Playingfield extends JPanel implements KeyListener {
         if (!isBusy) {
             isBusy = true;
 
-                    doMovement(e);
+            doMovement(e);
 
         }
 
@@ -187,6 +194,16 @@ public class Playingfield extends JPanel implements KeyListener {
         }
         System.out.println(e.getKeyCode());
         doMoveActionRender(getGraphics());
+        if (isBattle(tilemap[yLoc][xLoc])) {
+            BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
+            if (battleManager.startBattle()) {
+                System.out.println("Success");
+            }
+            else {
+                xLoc=0;
+                yLoc=0;
+            }
+        }
 
     }
 
@@ -194,9 +211,10 @@ public class Playingfield extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
         isBusy = false;
     }
-    public void addMethod(Integer layer,Runnable action){
-        if(!layers.containsKey(layer))
-            layers.put(layer,new ArrayList<>());
+
+    public void addMethod(Integer layer, Runnable action) {
+        if (!layers.containsKey(layer))
+            layers.put(layer, new ArrayList<>());
         layers.get(layer).add(action);
     }
 }

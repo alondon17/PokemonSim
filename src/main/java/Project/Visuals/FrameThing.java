@@ -14,6 +14,7 @@ public class FrameThing extends JFrame {
         this.setBackground(Color.GRAY);
         this.setResizable(true);
         this.setVisible(true);
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 this.setFocusable(true);
 

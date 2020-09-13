@@ -121,7 +121,7 @@ public class AtackMngr {
         switch (move.function()) {
             //dragon rage
             case FIXED40:
-                return 40;
+                return typeAdv(attacked,move)!=0?40:0;
             default:
                 int power = switch (move.function()) {
                     default -> move.power();
