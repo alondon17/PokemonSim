@@ -74,8 +74,6 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
         if (y + yLoc >= 0 && y + yLoc < tilemap.length && x + xLoc >= 0 && x + xLoc < tilemap[0].length && !isWall(tilemap[y + yLoc][x + xLoc])) {
             yLoc += y;
             xLoc += x;
-
-
         }
         this.repaint();
 
@@ -192,8 +190,9 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
                 playerSprite = playerSpriteMap.getSubimage(0, 64, 32, 32);
             }
         }
+        this.repaint();
         System.out.println(e.getKeyCode());
-        doMoveActionRender(getGraphics());
+//        doMoveActionRender(getGraphics());
         if (isBattle(tilemap[yLoc][xLoc])) {
             this.setVisible(false);
             BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
