@@ -1,6 +1,12 @@
 package Project.Visuals;
 
-import Project.*;
+import Project.Battles.BattleManager;
+import Project.Battles.Opponent;
+import Project.Battles.Player;
+import Project.Battles.TrainerClass;
+import Project.Battles.PokemonData.PokeSelector;
+import Project.Battles.PokemonData.Pokemon;
+import Project.Battles.PokemonData.SpeciesList;
 import Project.SystemStuff.Consts;
 
 import javax.imageio.ImageIO;
@@ -14,8 +20,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Playingfield extends JPanel implements KeyListener {
+public class Playingfield extends JLayeredPane implements KeyListener {
     private static BufferedImage playerSpriteMap;
+
+    public static BufferedImage getBrownWithGrassTile() {
+        return brownWithGrassTile;
+    }
+
     private static BufferedImage brownWithGrassTile;
     private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/images/pokemon.png");
 
@@ -41,25 +52,55 @@ public class Playingfield extends JPanel implements KeyListener {
     int sizex = Consts.xTileSize;
     int sizey = Consts.yTileSize;
     int xLoc = 0;
+
+    public BufferedImage getPlayerSprite() {
+        return playerSprite;
+    }
+
+    public static BufferedImage getPlayerSpriteMap() {
+        return playerSpriteMap;
+    }
+
+    public int getxLoc() {
+        return xLoc;
+    }
+
+    public int getyLoc() {
+        return yLoc;
+    }
+
     int yLoc = 0;
     double[][] tilemap;
     Color bordo = new Color(120, 0, 0);
     Color lightred = new Color(250, 128, 114);
     boolean isBusy = false;
-    BufferedImage image;
-    private ImageIcon playerIcon;
-    private int[][] playinggrid = new int[10][10];
-    private int[] playerX = new int[10];
-    private int[] playerY = new int[10];
     private BufferedImage playerSprite;
     private HashMap<Integer, ArrayList<Runnable>> layers = new HashMap<>();
+    private HashMap<Integer, JPanel> layerMap = new HashMap<>();
 
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
         this.tilemap = tilemap;
         this.parent = parent;
         playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
-setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
+        setSize(sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+
+        JPanel newLayer = new PlayLayer(tilemap,this,0);
+        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+        this.add(newLayer, 0);
+        layerMap.put(0, newLayer);
+
+        newLayer = new PlayLayer(tilemap,this,2);
+        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+        this.add(newLayer, 2);
+        layerMap.put(2, newLayer);
+
+        newLayer = new PlayLayer(tilemap,this,1);
+        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+        this.add(newLayer, 1);
+        layerMap.put(1, newLayer);
+
+
     }
 
     public boolean isWall(double val) {
@@ -76,7 +117,6 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
             xLoc += x;
         }
         this.repaint();
-
     }
 
     public void paint(Graphics g) {
@@ -92,68 +132,85 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
         //draw player imageicon
 //            playerIcon = new ImageIcon("src/images/playerIcon.png");
 //            playerIcon.paintIcon(this, g, playerX[1], playerY[1]);
-        doMoveActionRender(g);
-        for (ArrayList<Runnable> layer : layers.values()) {
-            for (Runnable draw : layer
-            ) {
-                draw.run();
-            }
-        }
-        layers.clear();
+//        doMoveActionRender(g);
+
+paintChildren(g);
 
     }
 
-    public void doMoveActionRender(Graphics g) {
-
-        int yLength = tilemap.length;
-        int xLength = tilemap[0].length;
-        int xPlayer = -999;
-        int yPlayer = -999;
-        int yRenderloc = 0;
-        for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; yLoc > Consts.aRenderDis ? y <= yLoc + Consts.aRenderDis : y <= 2 * Consts.aRenderDis; y++) {
-            int xRenderloc = 0;
-            for (int x = xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0; x <= (xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis); x++) {
-                Color color = null;
-                if (y == yLoc && x == xLoc) {
-                    xPlayer = xRenderloc;
-                    yPlayer = yRenderloc;
-                }
-                if (y < 0 || yLength <= y || x < 0 || xLength <= x)
-                    color = Color.GRAY;
-                else {
-                    switch ((int) (tilemap[y][x] * 2)) {
-                        case 1 -> {
-                            int finalXRenderloc = xRenderloc;
-                            int finalYRenderloc = yRenderloc;
-                            addMethod(0, () -> {
-                                g.drawImage(brownWithGrassTile, offsetx + finalXRenderloc * sizex, offsety + finalYRenderloc * sizey, sizex, sizey, this);
-                            });
-                        }
-                        case 0 -> color = (bordo);
-                        case 2 -> color = (Color.WHITE);
-                        case 4 -> color = (Color.GREEN);
-                    }
-                }
-                if (color != null) {
-                    g.setColor(color);
-                    g.fillRect(offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey);
-                }
-                xRenderloc++;
-            }
-            yRenderloc++;
-
-        }
-        if (xPlayer != -999) {
-            int finalXPlayer = xPlayer;
-            int finalYPlayer = yPlayer;
-            addMethod(1, () -> {
-                g.drawImage(playerSprite, offsetx + finalXPlayer * sizex, offsety + finalYPlayer * sizey, sizex, sizey, this);
-            });
-        }
-
-
-    }
-
+//    public void doMoveActionRender(Graphics g) {
+//
+//        int yLength = tilemap.length;
+//        int xLength = tilemap[0].length;
+//        int xPlayer = -999;
+//        int yPlayer = -999;
+//        int yRenderloc = 0;
+//        for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; yLoc > Consts.aRenderDis ? y <= yLoc + Consts.aRenderDis : y <= 2 * Consts.aRenderDis; y++) {
+//            int xRenderloc = 0;
+//            for (int x = xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0; x <= (xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis); x++) {
+//                Color color = null;
+//                if (y == yLoc && x == xLoc) {
+//                    xPlayer = xRenderloc;
+//                    yPlayer = yRenderloc;
+//                }
+//                if (y < 0 || yLength <= y || x < 0 || xLength <= x)
+//                    color = Color.GRAY;
+//                else {
+//                    switch ((int) (tilemap[y][x] * 2)) {
+//                        case 1 -> {
+//                            int finalXRenderloc = xRenderloc;
+//                            int finalYRenderloc = yRenderloc;
+//
+//                            drawImage(brownWithGrassTile, offsetx + finalXRenderloc * sizex, offsety + finalYRenderloc * sizey, sizex, sizey, 1);
+//
+//                        }
+//                        case 0 -> color = (bordo);
+//                        case 2 -> color = (Color.WHITE);
+//                        case 4 -> color = (Color.GREEN);
+//                    }
+//                }
+//                if (color != null) {
+//                    drawRect(color,offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey,1);
+//                }
+//                xRenderloc++;
+//            }
+//            yRenderloc++;
+//
+//        }
+//        if (xPlayer != -999) {
+//            int finalXPlayer = xPlayer;
+//            int finalYPlayer = yPlayer;
+//
+//                drawImage(playerSprite, offsetx + finalXPlayer * sizex, offsety + finalYPlayer * sizey, sizex, sizey, 1);
+//
+//        }
+//
+//
+//    }
+//
+//    private void drawImage(BufferedImage img, int x, int y, int sizex, int sizey, int layer) {
+//        if (!layerMap.containsKey(layer)) {
+//            JPanel newLayer = new JPanel();
+//
+//            newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+//            layerMap.put(layer, newLayer);
+//            add(newLayer, layer);
+//        }
+//        layerMap.get(layer).getGraphics().drawImage(img, x, y, sizex, sizey, layerMap.get(layer));
+//    }
+//
+//    private void drawRect(Color color, int x, int y, int sizex, int sizey, int layer) {
+//        if (!layerMap.containsKey(layer)) {
+//            JPanel newLayer = new JPanel();
+//
+//            newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+//            layerMap.put(layer, newLayer);
+//            add(newLayer, layer);
+//        }
+//        Graphics g=layerMap.get(layer).getGraphics();
+//        g.setColor(color);
+//        layerMap.get(layer).getGraphics().fillRect(x, y, sizex, sizey);
+//    }
 
     public void keyTyped(KeyEvent e) {
 
@@ -196,19 +253,18 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
         if (isBattle(tilemap[yLoc][xLoc])) {
             this.setVisible(false);
             BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
-            try{
+            try {
                 if (battleManager.startBattle()) {
                     System.out.println("Success");
                 } else {
                     xLoc = 0;
                     yLoc = 0;
                 }
-            }catch (Exception exception){
+            } catch (Exception exception) {
                 xLoc = 0;
                 yLoc = 0;
-            }
-            finally {
-                doMoveActionRender(getGraphics());
+            } finally {
+                //doMoveActionRender(getGraphics());
             }
             setVisible(true);
         }
@@ -220,9 +276,4 @@ setSize(sizex*Consts.aRenderDis*2,sizey*Consts.bRenderDis*2);
         isBusy = false;
     }
 
-    public void addMethod(Integer layer, Runnable action) {
-        if (!layers.containsKey(layer))
-            layers.put(layer, new ArrayList<>());
-        layers.get(layer).add(action);
-    }
 }

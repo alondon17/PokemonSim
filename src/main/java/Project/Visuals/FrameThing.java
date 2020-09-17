@@ -18,7 +18,6 @@ public class FrameThing extends JFrame {
 
         layeredPane.add(playingfield, JLayeredPane.DEFAULT_LAYER);
 
-        this.setBackground(Color.GRAY);
         this.setResizable(true);
         this.setVisible(true);
 

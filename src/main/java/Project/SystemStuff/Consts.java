@@ -1,6 +1,11 @@
 package Project.SystemStuff;
 
-import Project.*;
+import Project.Battles.AtackMngr;
+import Project.Battles.BattleManager;
+import Project.Battles.TurnChoice;
+import Project.Battles.PokemonData.Moves.EffectApplicator;
+import Project.Battles.PokemonData.Moves.Move;
+import Project.Battles.PokemonData.Pokemon;
 
 import java.util.Random;
 
@@ -62,5 +67,6 @@ public class Consts {
     final public static int BAG_CODE = 4;
     final public static int xTileSize=32;
     final public static int yTileSize=32;
+    final public static int DEFAULT_LEVEL = 12;
     final public static EffectApplicator<Pokemon, Pokemon[], TurnChoice, BattleManager, Move, Boolean> standardFunction=(attacker, pokemons, turnChoice, battleManager, move) -> AtackMngr.receiveHit(pokemons[turnChoice.getTargetloc()],attacker,move,turnChoice)>0;
 }
