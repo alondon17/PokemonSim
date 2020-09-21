@@ -38,18 +38,23 @@ public class PlayLayer extends JPanel {
                 for (int x = xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0; x <= (xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis); x++) {
                     if (!(y < 0 || yLength <= y || x < 0 || xLength <= x) && isSameLayer(tilemap[y][x])) {
                         Color color = null;
+                        BufferedImage tile=null;
                         switch ((int) (tilemap[y][x] * 2)) {
                             case 1 -> {
-                                g.drawImage(brownWithGrassTile, offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey, this);
+                                tile=brownWithGrassTile;
                             }
-                            case 0 -> color = (bordo);
-                            case 2 -> color = (Color.WHITE);
+//                            case 0 -> color = (bordo);
+                            case 0->tile=TileData.getImg(0)  ;                          case 2 -> color = (Color.WHITE);
                             case 4 -> color = (Color.GREEN);
                         }
 
                         if (color != null) {
                             g.setColor(color);
                             g.fillRect(offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey);
+                        }
+                        else{
+                            g.drawImage(tile, offsetx + xRenderloc * sizex, offsety + yRenderloc * sizey, sizex, sizey, this);
+
                         }
                     }
                     xRenderloc++;
@@ -66,22 +71,20 @@ public class PlayLayer extends JPanel {
                         xPlayer = xRenderloc;
                         yPlayer = yRenderloc;
                         break;
-                    }
+                    }xRenderloc++;
                 }
-                xRenderloc++;
+                yRenderloc++;
             }
-            yRenderloc++;
+            g.drawImage(parent.getPlayerSprite(), offsetx + xPlayer * sizex, offsety + yPlayer * sizey, sizex, sizey, this);
+
 
         }
-        g.drawImage(parent.getPlayerSprite(), offsetx + xPlayer * sizex, offsety + yPlayer * sizey, sizex, sizey, this);
 
     }
 
 
     private boolean isSameLayer(double v) {
-        return layer == switch ((int) (v * 2)) {
-            case 1, 0 -> 2;
-            default -> 0;
-        };
+        if(tilemap==Consts.typeChart)v*=2;
+        return layer == TileData.getLayer((int) v);
     }
 }

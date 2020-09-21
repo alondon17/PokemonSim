@@ -21,30 +21,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Playingfield extends JLayeredPane implements KeyListener {
-    private static BufferedImage playerSpriteMap;
+    private static BufferedImage playerSpriteMap=GetImages.getPlayerSpriteMap();
 
     public static BufferedImage getBrownWithGrassTile() {
         return brownWithGrassTile;
     }
 
-    private static BufferedImage brownWithGrassTile;
-    private static Image playerTile = Toolkit.getDefaultToolkit().getImage("src/main/images/pokemon.png");
+    private static BufferedImage brownWithGrassTile=GetImages.getBrownWithGrassTile();
 
-    static {
-        try {
-            playerSpriteMap = ImageIO.read(new File("src/main/images/spriteMap.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    static {
-        try {
-            brownWithGrassTile = ImageIO.read(new File("src/main/images/grassTile.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     int offsetx = 0;
     int offsety = 0;
@@ -80,25 +66,27 @@ public class Playingfield extends JLayeredPane implements KeyListener {
 
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
+        playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
         this.tilemap = tilemap;
         this.parent = parent;
-        playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
         setSize(sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-
-        JPanel newLayer = new PlayLayer(tilemap,this,0);
+        JPanel newLayer = new PlayLayer(tilemap,this,2);
         newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, 0);
-        layerMap.put(0, newLayer);
-
-        newLayer = new PlayLayer(tilemap,this,2);
-        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, 2);
+        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,0);
         layerMap.put(2, newLayer);
 
         newLayer = new PlayLayer(tilemap,this,1);
         newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, 1);
+        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,1);
         layerMap.put(1, newLayer);
+        newLayer = new PlayLayer(tilemap,this,0);
+        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,2);
+        layerMap.put(0, newLayer);
+
+
+
+
 
 
     }
