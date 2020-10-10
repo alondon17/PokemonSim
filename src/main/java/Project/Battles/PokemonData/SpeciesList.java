@@ -5,6 +5,9 @@ import Project.Battles.PokemonData.Moves.MoveList;
 import Project.Battles.PokemonData.Stats.BaseStats;
 import Project.SystemStuff.Consts;
 import Project.SystemStuff.DBManager;
+import Project.SystemStuff.Utilities.Methoder;
+import netscape.javascript.JSException;
+import netscape.javascript.JSObject;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -15,13 +18,13 @@ public class SpeciesList {
 
     static {
         Species pkmn;
-        pkmn = new Species(0, "Test", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 336,1,82});
+        pkmn = new Species(0, "Test", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 336, 1, 82});
         list.put(pkmn.id(), pkmn);
         pkmn = new Species(1, "Bulbasaur", new BaseStats(49, 65, 49, 65, 65, 45), 64, new int[]{0, 0, 0, 1, 0, 0}, 12, 4, new int[]{1, 45, 1, 33, 3, 22, 6, 74, 9, 73, 12, 75, 15, 77, 15, 79, 18, 402, 21, 36, 24, 230, 27, 235, 30, 388, 33, 38, 36, 76});
         list.put(pkmn.id(), pkmn);
-        pkmn = new Species(2, "Ivysaur", new BaseStats(60,62,63,80,80,60),142, new int[]{0,0,0,1,1,0}, 12, 4, new int[]{1,33,1,22});
+        pkmn = new Species(2, "Ivysaur", new BaseStats(60, 62, 63, 80, 80, 60), 142, new int[]{0, 0, 0, 1, 1, 0}, 12, 4, new int[]{1, 33, 1, 22});
         list.put(pkmn.id(), pkmn);
-        pkmn = new Species(3, "Venusaur", new BaseStats(80,82,83,100,100,80),236, new int[]{0,0,0,2,1,0}, 12, 4, new int[]{1,33,1,22});
+        pkmn = new Species(3, "Venusaur", new BaseStats(80, 82, 83, 100, 100, 80), 236, new int[]{0, 0, 0, 2, 1, 0}, 12, 4, new int[]{1, 33, 1, 22});
         list.put(pkmn.id(), pkmn);
         pkmn = new Species(4, "Charmander", new BaseStats(39, 52, 43, 60, 50, 65), 62, new int[]{0, 0, 0, 0, 0, 1}, 10, 0, new Move[]{MoveList.getMove(52), MoveList.getMove(33), MoveList.getMove(51)});
         list.put(pkmn.id(), pkmn);
@@ -45,9 +48,25 @@ public class SpeciesList {
     }
 
     private static void insertDBSpecies() throws SQLException {
-        for (Species species : DBManager.getSpecies()) {
+        //TODo switch first check if table exists then check if table empty
+        boolean isSafeData = DBManager.doesTableExist("public", "pokemon");
+        ArrayList<Species> dbSpec = new ArrayList<>();
+        if (isSafeData) {
+            dbSpec = DBManager.getSpecies();
+            if (dbSpec.isEmpty()) {
+                System.out.println("doog");
+                isSafeData = false;
+            }
+        }
+        if (!isSafeData) {
+            DBManager.pushPokemonToDB();
+            dbSpec = DBManager.getSpecies();
+        }
+
+        for (Species species : dbSpec) {
             list.put(species.id(), species);
         }
+
     }
 
     public static void printList() {
@@ -75,16 +94,17 @@ public class SpeciesList {
     }
 
     private static boolean legalLevel(int level) {
-        return level>=0&&level<=100;
+        return level >= 0 && level <= 100;
     }
 
     public static Pokemon getPoke(int userChoice) {
         return getPoke(userChoice, Consts.DEFAULT_LEVEL);
     }
+
     public static void DBtoInitializerCode() throws SQLException {
-            for (Species species : DBManager.getSpecies()) {
-                System.out.println(species.toCode());
-            }
+        for (Species species : DBManager.getSpecies()) {
+            System.out.println(species.toCode());
+        }
     }
 }
 

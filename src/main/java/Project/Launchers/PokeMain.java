@@ -10,7 +10,7 @@ public class PokeMain {
 
     public static void main(String[] args) {
         Trainer trainer1 = new Player("Alon", PokeSelector.select(new int[]{39}));
-        Trainer trainer2 = new Player("Alex", PokeSelector.select(new int[]{66}));
+        Trainer trainer2 = new Player("Alex", PokeSelector.select());
         CurrentObjs.setBattleManager(new BattleManager(trainer1, trainer2, 1));
         CurrentObjs.battleManager().startBattle();
 

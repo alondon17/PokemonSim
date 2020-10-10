@@ -33,7 +33,7 @@ public class PlayLayer extends JPanel {
 
         int yRenderloc = 0;
         if (layer != 1)
-            for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; yLoc > Consts.aRenderDis ? y <= yLoc + Consts.aRenderDis : y <= 2 * Consts.aRenderDis; y++) {
+            for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; y <= (yLoc > Consts.aRenderDis ? yLoc + Consts.aRenderDis :2 * Consts.aRenderDis); y++) {
                 int xRenderloc = 0;
                 for (int x = xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0; x <= (xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis); x++) {
                     if (!(y < 0 || yLength <= y || x < 0 || xLength <= x) && isSameLayer(tilemap[y][x])) {
@@ -44,7 +44,8 @@ public class PlayLayer extends JPanel {
                                 tile=brownWithGrassTile;
                             }
 //                            case 0 -> color = (bordo);
-                            case 0->tile=TileData.getImg(0)  ;                          case 2 -> color = (Color.WHITE);
+                            case 0->tile=TileData.getImg(0)  ;
+                            case 2 -> color = (Color.WHITE);
                             case 4 -> color = (Color.GREEN);
                         }
 
@@ -63,7 +64,7 @@ public class PlayLayer extends JPanel {
 
             }
         else {
-            for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; yLoc > Consts.aRenderDis ? y <= yLoc + Consts.aRenderDis : y <= 2 * Consts.aRenderDis; y++) {
+            for (int y = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0; y <=( yLoc > Consts.aRenderDis ? yLoc + Consts.aRenderDis : 2 * Consts.aRenderDis); y++) {
                 int xRenderloc = 0;
                 for (int x = xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0; x <= (xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis); x++) {
 
