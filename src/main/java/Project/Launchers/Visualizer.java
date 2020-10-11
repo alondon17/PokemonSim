@@ -22,7 +22,7 @@ public class Visualizer {
 
     }
 
-    public static void game(byte[][] tilemap, int aLoc, int bLoc, int aLocEnd, int bLocEnd) {
+    /*public static void game(byte[][] tilemap, int aLoc, int bLoc, int aLocEnd, int bLocEnd) {
         Visualizer.tilemap = tilemap;
         Visualizer.aLoc = aLoc;
         Visualizer.bLoc = bLoc;
@@ -83,5 +83,5 @@ public class Visualizer {
             }
             System.out.println();
         }
-    }
+    }*/
 }

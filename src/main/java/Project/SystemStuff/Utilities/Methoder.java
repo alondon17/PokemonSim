@@ -107,4 +107,10 @@ public class Methoder {
         }
         return s;
     }
+    public static boolean inRange(double val1, double val2, double top1, double bottom1,double top2, double bottom2){
+        return inRange(val1,top1,bottom1)&&inRange(val2,top2,bottom2);
+    }
+    public static boolean inRange(double val, double top, double bottom){
+return val>=bottom&&val<=top;
+    }
 }
