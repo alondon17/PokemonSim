@@ -10,6 +10,7 @@ import Project.Battles.PokemonData.Stats.PStats;
 import Project.Battles.StatChanges;
 import Project.SystemStuff.Consts;
 import Project.SystemStuff.Utilities.Methoder;
+import Project.Visuals.ConsoleColors;
 
 public class Pokemon implements Comparable<Pokemon> {
     private Species species;
@@ -63,12 +64,14 @@ public class Pokemon implements Comparable<Pokemon> {
     }
 
     public void printVisualHP() {
-        //TODO add color
         int i = 0;
-        int stop = (int) Math.ceil(((double) currHp / pkmnHp()) * Consts.HP_LENGTH_PRINT);
-        System.out.print("*");
+        double percent=(double) currHp / pkmnHp();
+        String color=percent>0.5? ConsoleColors.GREEN_BOLD:percent>0.2?ConsoleColors.YELLOW_BOLD:ConsoleColors.RED_BOLD;
+        int stop = (int) Math.ceil(percent * Consts.HP_LENGTH_PRINT);
+        System.out.print("*"+color);
         for (; i < stop; i++)
             System.out.print((char) 9632);
+        System.out.print(ConsoleColors.RESET);
         for (; i < Consts.HP_LENGTH_PRINT; i++)
             System.out.print((char) 9633);
         System.out.print("*");

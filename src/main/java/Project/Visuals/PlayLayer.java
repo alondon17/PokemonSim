@@ -33,7 +33,7 @@ public class PlayLayer extends JPanel {
         int xRendStart=xLoc > Consts.bRenderDis ? xLoc - Consts.bRenderDis : 0;
         int xRendEnd=xLoc > Consts.bRenderDis ? xLoc + Consts.bRenderDis : 2 * Consts.bRenderDis;
         int yRendStart = yLoc > Consts.aRenderDis ? yLoc - Consts.aRenderDis : 0;
-        int yRendEnd = yLoc > Consts.aRenderDis ? yLoc + Consts.aRenderDis : 2 * Consts.aRenderDis
+        int yRendEnd = yLoc > Consts.aRenderDis ? yLoc + Consts.aRenderDis : 2 * Consts.aRenderDis;
         int yRenderloc = 0;
         if (layer != 1)
             for (int y = yRendStart; y <= yRendEnd; y++) {
@@ -80,6 +80,8 @@ public class PlayLayer extends JPanel {
 //                yRenderloc++;
 //            }
 //            if()
+            xPlayer=xLoc-xRendStart;
+            yPlayer=yLoc-yRendStart;
             //TODO redefine function for multiple charater and be betteer
             g.drawImage(parent.getPlayerSprite(), offsetx + xPlayer * sizex, offsety + yPlayer * sizey, sizex, sizey, this);
 

@@ -11,7 +11,7 @@ import netscape.javascript.JSObject;
 
 import java.sql.SQLException;
 import java.util.*;
-
+//TODO maybe use https://pokeapi.co/
 public class SpeciesList {
     private static final TreeMap<Integer, Species> list = new TreeMap<>();
     private static Random rnd = new Random();

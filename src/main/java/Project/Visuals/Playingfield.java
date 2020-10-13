@@ -63,32 +63,21 @@ public class Playingfield extends JLayeredPane implements KeyListener {
     private BufferedImage playerSprite;
     private HashMap<Integer, ArrayList<Runnable>> layers = new HashMap<>();
     private HashMap<Integer, JPanel> layerMap = new HashMap<>();
+    private final int[] layerNums={0,1,2};  // must be ascending
 
     public Playingfield(double[][] tilemap, JFrame parent) {
         super();
+
         playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
         this.tilemap = tilemap;
         this.parent = parent;
         setSize(sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        JPanel newLayer = new PlayLayer(tilemap,this,2);
-        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,0);
-        layerMap.put(2, newLayer);
-
-        newLayer = new PlayLayer(tilemap,this,1);
-        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,1);
-        layerMap.put(1, newLayer);
-        newLayer = new PlayLayer(tilemap,this,0);
-        newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        this.add(newLayer, JLayeredPane.DEFAULT_LAYER,2);
-        layerMap.put(0, newLayer);
-
-
-
-
-
-
+        for (int i = layerNums.length-1; i >=0; i--) {
+            JPanel newLayer = new PlayLayer(tilemap,this, layerNums[i]);
+            newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+            this.add(newLayer, JLayeredPane.DEFAULT_LAYER,layerNums.length-i);
+            layerMap.put(i, newLayer);
+        }
     }
 
     public boolean isWall(double val) {
@@ -236,6 +225,7 @@ paintChildren(g);
             }
         }
         this.repaint();
+        this.paintChildren(getGraphics());
         System.out.println(e.getKeyCode());
 //        doMoveActionRender(getGraphics());
         if (isBattle(tilemap[yLoc][xLoc])) {
