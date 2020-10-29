@@ -6,6 +6,7 @@ public class MoveList {
     private static TreeMap<Integer, Move> list = new TreeMap<>();
 
     static {
+        //TODO: FIZ ALL TO MOVE CONSTRUCTOR FORMAT
         Move move;
         move =new MoveNorm(1,1,"Pound",40,true,100,35);
         list.put(move.id(),move);

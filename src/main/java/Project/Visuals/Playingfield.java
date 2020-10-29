@@ -8,10 +8,13 @@ import Project.Battles.PokemonData.PokeSelector;
 import Project.Battles.PokemonData.Pokemon;
 import Project.Battles.PokemonData.SpeciesList;
 import Project.SystemStuff.Consts;
+import Project.SystemStuff.Utilities.Methoder;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -21,30 +24,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Playingfield extends JLayeredPane implements KeyListener {
-    private static BufferedImage playerSpriteMap=GetImages.getPlayerSpriteMap();
-
-    public static BufferedImage getBrownWithGrassTile() {
-        return brownWithGrassTile;
-    }
-
-    private static BufferedImage brownWithGrassTile=GetImages.getBrownWithGrassTile();
-
-
-
-
+    private static BufferedImage playerSpriteMap = GetImages.getPlayerSpriteMap();
+    private static BufferedImage brownWithGrassTile = GetImages.getBrownWithGrassTile();
+    private final int[] layerNums = {0, 1, 2};  // must be ascending
     int offsetx = 0;
     int offsety = 0;
     JFrame parent;
     int sizex = Consts.xTileSize;
     int sizey = Consts.yTileSize;
     int xLoc = 0;
+    int yLoc = 0;
+    double[][] tilemap;
+    Color bordo = new Color(120, 0, 0);
+    Color lightred = new Color(250, 128, 114);
+    boolean isBusy = false;
+    byte encounterChance = 60;
+    private BufferedImage playerSprite;
+    private HashMap<Integer, ArrayList<Runnable>> layers = new HashMap<>();
+    private HashMap<Integer, JPanel> layerMap = new HashMap<>();
+    public Playingfield(double[][] tilemap, JFrame parent) {
+        super();
 
-    public BufferedImage getPlayerSprite() {
-        return playerSprite;
+        playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
+        this.tilemap = tilemap;
+        this.parent = parent;
+        setSize(sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+        for (int i = layerNums.length - 1; i >= 0; i--) {
+            JPanel newLayer = new PlayLayer(tilemap, this, layerNums[i]);
+            newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
+            this.add(newLayer, JLayeredPane.DEFAULT_LAYER, layerNums.length - i);
+            layerMap.put(i, newLayer);
+        }
+    }
+
+    public static BufferedImage getBrownWithGrassTile() {
+        return brownWithGrassTile;
     }
 
     public static BufferedImage getPlayerSpriteMap() {
         return playerSpriteMap;
+    }
+
+    public BufferedImage getPlayerSprite() {
+        return playerSprite;
     }
 
     public int getxLoc() {
@@ -53,31 +75,6 @@ public class Playingfield extends JLayeredPane implements KeyListener {
 
     public int getyLoc() {
         return yLoc;
-    }
-
-    int yLoc = 0;
-    double[][] tilemap;
-    Color bordo = new Color(120, 0, 0);
-    Color lightred = new Color(250, 128, 114);
-    boolean isBusy = false;
-    private BufferedImage playerSprite;
-    private HashMap<Integer, ArrayList<Runnable>> layers = new HashMap<>();
-    private HashMap<Integer, JPanel> layerMap = new HashMap<>();
-    private final int[] layerNums={0,1,2};  // must be ascending
-
-    public Playingfield(double[][] tilemap, JFrame parent) {
-        super();
-
-        playerSprite = playerSpriteMap.getSubimage(0, 0, 32, 32);
-        this.tilemap = tilemap;
-        this.parent = parent;
-        setSize(sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-        for (int i = layerNums.length-1; i >=0; i--) {
-            JPanel newLayer = new PlayLayer(tilemap,this, layerNums[i]);
-            newLayer.setBounds(0, 0, sizex * Consts.aRenderDis * 2, sizey * Consts.bRenderDis * 2);
-            this.add(newLayer, JLayeredPane.DEFAULT_LAYER,layerNums.length-i);
-            layerMap.put(i, newLayer);
-        }
     }
 
     public boolean isWall(double val) {
@@ -96,7 +93,7 @@ public class Playingfield extends JLayeredPane implements KeyListener {
         this.repaint();
     }
 
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
 ////        g.clearRect();
 //        //draw border for playingfield
 //        g.setColor(Color.white);
@@ -111,7 +108,7 @@ public class Playingfield extends JLayeredPane implements KeyListener {
 //            playerIcon.paintIcon(this, g, playerX[1], playerY[1]);
 //        doMoveActionRender(g);
 
-paintChildren(g);
+        paintChildren(g);
 
     }
 
@@ -197,7 +194,7 @@ paintChildren(g);
     public void keyPressed(KeyEvent e) {
 
         if (!isBusy) {
-            isBusy = true;
+//            isBusy = true;
 
             doMovement(e);
 
@@ -228,24 +225,32 @@ paintChildren(g);
         this.paintChildren(getGraphics());
         System.out.println(e.getKeyCode());
 //        doMoveActionRender(getGraphics());
-        if (isBattle(tilemap[yLoc][xLoc])) {
+        if (isBattle(tilemap[yLoc][xLoc]) && Methoder.rngPercent(encounterChance)) {
             this.setVisible(false);
-            BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
-            try {
-                if (battleManager.startBattle()) {
-                    System.out.println("Success");
-                } else {
+            //Todo : finnd out hoe to place battle system
+            JPanel newLayer = new Flashy();
+            newLayer.setBounds(0, 0, getWidth(), getHeight());
+            this.add(newLayer, 1, 0);
+            moveToFront(newLayer);
+            Timer timer2 = new Timer(5, e1 -> {
+                BattleManager battleManager = new BattleManager(new Player("alon", PokeSelector.select()), new Opponent(TrainerClass.BIKER, "Bob", new Pokemon[]{SpeciesList.getPoke(1, 1)}, 50), 1);
+                try {
+                    if (battleManager.startBattle()) {
+                        System.out.println("Success");
+                    } else {
+                        xLoc = 0;
+                        yLoc = 0;
+                    }
+                } catch (Exception exception) {
                     xLoc = 0;
                     yLoc = 0;
+                } finally {
+                    //doMoveActionRender(getGraphics());
                 }
-            } catch (Exception exception) {
-                xLoc = 0;
-                yLoc = 0;
-            } finally {
-                //doMoveActionRender(getGraphics());
-            }
-            setVisible(true);
+            });
         }
+        setVisible(true);
+
 
     }
 
